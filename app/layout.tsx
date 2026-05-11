@@ -21,7 +21,7 @@ export default function RootLayout({
     <html
       lang="en"
     >
-      <body className={`${spaceMono.className} min-h-full flex flex-col`}>{children}</body>
+      <body className={`${spaceMono.className} antialiased min-h-full flex flex-col`}>{children}</body>
     </html>
   );
 }
