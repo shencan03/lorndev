@@ -6,6 +6,7 @@ export default function Navbar() {
 			<Link href="/" className="hover:bg-[#353536] hover:rounded-xl px-2 py-1">home</Link>
 			<Link href="/blog" className="hover:bg-[#353536] hover:rounded-xl px-2 py-1">blog</Link>
 			<Link href="/thoughts" className="hover:bg-[#353536] hover:rounded-xl px-2 py-1">thoughts</Link>
+			<Link href="/curation" className="hover:bg-[#353536] hover:rounded-xl px-2 py-1">curation</Link>
 		</div>
 	)
 }
