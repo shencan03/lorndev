@@ -12,7 +12,7 @@ const curationList = [
 
 export default function Curation() {
   return (
-      <div className="flex flex-col items-center gap-1000">
+      <div className="flex flex-col gap-1000 mx-auto">
         <IndexCard items={curationList} colCount={2}/>
         <div id="movies">
           <MovieCard />

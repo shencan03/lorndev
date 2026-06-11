@@ -12,7 +12,7 @@ type IndexCardProps = {
 
 export default function IndexCard({colCount, items}: IndexCardProps) {
   return (
-    <div className={`grid grid-cols-${colCount} gap-x-10 text-5xl`}>
+    <div className={`grid grid-cols-${colCount} gap-x-10 text-5xl justify-between`}>
       {items.map((item) => (
         <Link key={item.href} href={item.href}>{item.title}</Link>
       ))}
