@@ -14,7 +14,7 @@ export default function Navlinks() {
   const isActive = usePathname()
 
   return (
-    <div>
+    <>
       {NavbarItems.map(({href, label}) => {
         const activePath = href === isActive
 
@@ -22,6 +22,6 @@ export default function Navlinks() {
           <Link key={href} href={href} className={`hover:bg-[#353536] hover:rounded-xl px-6 py-1 ${activePath? 'bg-[#353536] rounded-xl' : ''}`}>{label}</Link>
         )
       })}
-    </div>
+    </>
   )
 }

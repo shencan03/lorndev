@@ -2,10 +2,8 @@ import NavLinks from "@/components/NavLinks"
 
 export default function Navbar() {
 	return (
-		<div className="flex justify-center mx-auto my-4">
-			<div className="text-2xl bg-[#282829] rounded-xl px-20 gap-20 py-3 fixed">
-				<NavLinks />
-			</div>
+		<div className="text-2xl bg-[#282829] rounded-xl sm:px-20 sm:gap-20 sm:py-3 sm:fixed sm:left-1/2 flex flex-col sm:-translate-x-1/2 sm:flex-row sm:top-4">
+			<NavLinks />
 		</div>
 	)
 }
