@@ -22,7 +22,7 @@ export default function RootLayout({
     <html
       lang="en"
     >
-      <body className={`${spaceMono.className} antialiased min-h-full flex flex-col gap-10`}>
+      <body className={`${spaceMono.className} antialiased min-h-full flex flex-col gap-20`}>
         <Navbar />
         {children}
       </body>
