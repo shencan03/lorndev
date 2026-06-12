@@ -1,7 +1,7 @@
-import IndexCard from "@/components/IndexCard"
-import MovieCard from "@/components/MovieCard"
-import PeopleCard from "@/components/PeopleCard"
-import BooksCard from "@/components/BooksCard"
+import IndexCard from "@/app/ui/IndexCard"
+import MovieCard from "@/app/ui/MovieCard"
+import PeopleCard from "@/app/ui/PeopleCard"
+import BooksCard from "@/app/ui/BooksCard"
 
 const curationList = [
   {title: "Movies", href: "/curation#movies"},

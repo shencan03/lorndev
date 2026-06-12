@@ -1,4 +1,4 @@
-import NavLinks from "@/components/NavLinks"
+import NavLinks from "@/app/ui/NavLinks"
 
 export default function Navbar() {
 	return (

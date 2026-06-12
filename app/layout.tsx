@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import {Space_Mono} from 'next/font/google'
-import Navbar from "@/components/Navbar";
+import Navbar from "@/app/ui/Navbar";
 
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
