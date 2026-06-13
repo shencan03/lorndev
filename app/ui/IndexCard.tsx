@@ -1,13 +1,5 @@
 import Link from "next/link"
-
-type Item = {
-  title: string
-  href: string
-}
-
-type IndexCardProps = {
-  items: Item[]
-}
+import { IndexCardProps } from "../lib/definitions"
 
 export default function IndexCard({items}: IndexCardProps) {
   return (
