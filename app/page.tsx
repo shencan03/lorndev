@@ -5,12 +5,12 @@ export default function Home() {
 
   return (
     <>
-      <div className='hidden sm:block z-[-1] opacity-40'>
+      <div className='hidden sm:block z-[-1] opacity-40 sm:static'>
         <Image
           src={bebop}
           alt="GIF of cowboy bebop as background image"
           fill
-          quality={100}
+          quality={75}
           style={{maskImage: 'linear-gradient(to bottom, black, transparent)'}}
         />
       </div>
