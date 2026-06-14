@@ -7,8 +7,6 @@ import { SquareChevronRight, SquareChevronDown } from 'lucide-react'
 
 const NavbarItems = [
   {href: "/", label: "home"},
-  {href: "/blog", label: "blog"},
-  {href: "/thoughts", label: "thoughts"},
   {href: "/curation", label: "curation"}
 ]
 
