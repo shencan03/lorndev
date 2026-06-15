@@ -20,7 +20,7 @@ export default function Navlinks() {
 
   return (
     <>
-      <button onClick={handleClick} className="sm:hidden">{open ? <SquareChevronDown/> : <SquareChevronRight/>}</button>
+      <button onClick={handleClick} className="sm:hidden pl-2">{open ? <SquareChevronDown/> : <SquareChevronRight/>}</button>
       {NavbarItems.map(({href, label}) => {
         const activePath = href === isActive
 
