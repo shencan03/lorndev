@@ -7,9 +7,13 @@ export default function NavMenu({ links }: { links: NavLink[] }) {
     <nav>
       {links.map((link) => {
         return (
-          <Link key={link.link} href={link.href}>
-            {link.link}
-          </Link>
+          <>
+            <Button>
+              <Link key={link.link} href={link.href}>
+                {link.link}
+              </Link>
+            </Button>
+          </>
         );
       })}
     </nav>

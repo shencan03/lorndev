@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn("font-mono", jetbrainsMono.variable)}>
-      <body className={`antialiased min-h-full flex flex-col`}>
+      <body className="antialiased min-h-full flex flex-col">
         <Navbar />
         <main>{children}</main>
       </body>
