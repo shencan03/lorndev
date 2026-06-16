@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import {Space_Mono, JetBrains_Mono } from 'next/font/google'
-import Navbar from "@/app/ui/Navbar";
+import { JetBrains_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
+import Navbar from "@/app/ui/Navbar";
 
-const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
-
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
-  subsets: ["latin"]
-})
-
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 export const metadata: Metadata = {
   title: "lorndev",
   description: "personal blog of lorndev",
@@ -22,12 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en" className={cn("font-mono", jetbrainsMono.variable)}
-    >
-      <body className={`${spaceMono.className} antialiased min-h-full flex flex-col sm:pt-30`}>
+    <html lang="en" className={cn("font-mono", jetbrainsMono.variable)}>
+      <body className={`antialiased min-h-full flex flex-col`}>
         <Navbar />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );

@@ -1,9 +1,11 @@
-import NavLinks from "@/app/ui/NavLinks"
+import NavMenu from "@/app/ui/NavMenu";
+import type { NavLink } from "@/app/lib/definitions";
+
+const links: NavLink[] = [
+  { link: "home", href: "/" },
+  { link: "curation", href: "/curation" },
+];
 
 export default function Navbar() {
-	return (
-		<div className="flex flex-col w-fit gap-4 py-4 text-2xl rounded-xl sm:px-20 sm:py-3 sm:left-1/2 sm:-translate-x-1/2 sm:flex-row sm:top-0 fixed">
-			<NavLinks />
-		</div>
-	)
+  return <NavMenu links={links} />;
 }

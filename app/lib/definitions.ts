@@ -7,3 +7,8 @@ export type IndexCardItem = {
 export type IndexCardProps = {
   items: IndexCardItem[]
 }
+
+export type NavLink = {
+  link: string
+  href: string
+}
