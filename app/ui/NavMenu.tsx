@@ -18,13 +18,14 @@ export default function NavMenu({
       <div>
         {links.map((link) => {
           return (
-            <>
-              <Button variant="link" className="text-white" asChild>
-                <Link key={link.link} href={link.href}>
-                  {link.link}
-                </Link>
-              </Button>
-            </>
+            <Button
+              key={link.link}
+              variant="link"
+              className="text-white"
+              asChild
+            >
+              <Link href={link.href}>{link.link}</Link>
+            </Button>
           );
         })}
       </div>
