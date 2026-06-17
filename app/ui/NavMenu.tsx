@@ -20,7 +20,7 @@ export default function NavMenu({
           return (
             <>
               <Button variant="link" className="text-white" asChild>
-                <Link key={link.link} href={link.href} className="text-lg">
+                <Link key={link.link} href={link.href}>
                   {link.link}
                 </Link>
               </Button>
