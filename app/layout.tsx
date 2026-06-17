@@ -22,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${spaceMono.className} antialiased min-h-full`}>
         <Navbar />
-        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14">{children}</main>
+        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14 bg-[#14001C] min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

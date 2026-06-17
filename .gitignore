@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dev placeholders
+
+/app/ui/PlaceHolderText.tsx
