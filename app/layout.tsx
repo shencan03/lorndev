@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { JetBrains_Mono, Space_Mono } from "next/font/google";
-import { cn } from "@/lib/utils";
+import { Space_Mono } from "next/font/google";
 import Navbar from "@/app/ui/Navbar";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
 
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
@@ -26,11 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${spaceMono.className} antialiased min-h-full flex flex-col gap-6`}
-      >
+      <body className={`${spaceMono.className} antialiased min-h-full`}>
         <Navbar />
-        {children}
+        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14">{children}</main>
       </body>
     </html>
   );
