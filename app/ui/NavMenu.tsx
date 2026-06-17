@@ -19,7 +19,7 @@ export default function NavMenu({
         {links.map((link) => {
           return (
             <>
-              <Button variant="link" className="text-white">
+              <Button variant="link" className="text-white" tabIndex={-1}>
                 <Link key={link.link} href={link.href} className="text-lg">
                   {link.link}
                 </Link>
