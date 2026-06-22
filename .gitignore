@@ -40,6 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# dev placeholders
-
+# dev helpers
+response.json
 /app/ui/PlaceHolderText.tsx

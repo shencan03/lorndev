@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import type { NavLink } from "@/app/lib/definitions";
 import Link from "next/link";
 import Logo from "@/app/ui/Logo";
+import LastPlayedCard from "@/app/ui/LastPlayedCard";
 
-export default function NavMenu({
+export default async function NavMenu({
   links,
   className,
 }: {
@@ -15,6 +16,7 @@ export default function NavMenu({
       className={`sm:flex sm:justify-between sm:px-4 sm:py-2 sm:border-b sm:items-center ${className}`}
     >
       <Logo className="text-xl" />
+      <LastPlayedCard />
       <div>
         {links.map((link) => {
           return (
