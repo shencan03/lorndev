@@ -15,14 +15,14 @@ export default function LastPlayedCard({ className }: { className?: string }) {
   if (isLoading) return <LastPlayedCardSkeleton />;
   const { title, url, thumbnailurl, artists, album } = data!;
   return (
-    <div className={`flex items-center gap-x-2 px-2 ${className}`}>
-      <Link href={url} className="border-r shrink-0">
+    <div className={`flex items-center gap-x-2 sm:gap-x-4 px-2 ${className}`}>
+      <Link href={url} className="border-r shrink-0 pr-2 sm:pr-4">
         <Image
           src={thumbnailurl}
           alt="small thumbnail of lastplayed song"
           width={60}
           height={60}
-          className="w-[32px] h-[32px] sm:w-[60px] sm:h-[60px] pr-1"
+          className="w-[32px] h-[32px] sm:w-[60px] sm:h-[60px]"
         />
       </Link>
 
