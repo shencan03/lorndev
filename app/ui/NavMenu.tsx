@@ -3,6 +3,10 @@ import type { NavLink } from "@/app/lib/definitions";
 import Link from "next/link";
 import Logo from "@/app/ui/Logo";
 import LastPlayedCard from "@/app/ui/LastPlayedCard";
+import { SWRConfig } from "swr";
+import { Suspense } from "react";
+import { getLastPlayed } from "@/app/lib/last-played";
+import LastPlayedCardSkeleton from "@/app/ui/LastPlayedCardSkeletion";
 
 export default async function NavMenu({
   links,
@@ -16,7 +20,11 @@ export default async function NavMenu({
       className={`sm:flex sm:justify-between sm:px-4 sm:py-2 sm:border-b sm:items-center ${className}`}
     >
       <Logo className="text-xl" />
-      <LastPlayedCard />
+      <Suspense fallback={<LastPlayedCardSkeleton />}>
+        <SWRConfig value={{ fallbackData: getLastPlayed() }}>
+          <LastPlayedCard />
+        </SWRConfig>
+      </Suspense>
       <div>
         {links.map((link) => {
           return (

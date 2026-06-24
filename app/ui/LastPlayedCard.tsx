@@ -1,12 +1,15 @@
+"use client";
+
 import { getLastPlayed } from "@/app/lib/last-played";
+import useSWR from "swr";
 import Image from "next/image";
-import { LastPlayed } from "@/app/lib/definitions";
 import Link from "next/link";
 
-export default async function LastPlayedCard() {
-  const { title, url, thumbnailurl, artists, album }: LastPlayed =
-    await getLastPlayed();
-
+export default function LastPlayedCard() {
+  const { data } = useSWR("lastplayed", getLastPlayed, {
+    refreshInterval: 3000,
+  });
+  const { title, url, thumbnailurl, artists, album } = data!;
   return (
     <div className="flex justify-start items-center">
       <Image
