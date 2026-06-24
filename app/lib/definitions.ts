@@ -26,6 +26,6 @@ export interface LastPlayed extends Artist, Album {
   title: string;
   url: string;
   thumbnailurl: string;
-  album: Album;
-  artists?: Artist[];
+  album?: Album | null;
+  artists?: Artist[] | null;
 }

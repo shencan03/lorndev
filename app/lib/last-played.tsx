@@ -79,13 +79,15 @@ function formatLastPlayed(data: any) {
   const lastPlayedAlbum = isLastPlayedVideo
     ? lastPlayed.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text
         .runs[0]
-    : lastPlayed.flexColumns[2].musicResponsiveListItemFlexColumnRenderer.text
-        .runs[0];
+    : null;
 
-  const parsedAlbum = {
-    title: lastPlayedAlbum.text,
-    url: `${origin}/${albumEndpoint}/${lastPlayedAlbum.navigationEndpoint.browseEndpoint.browseId}`,
-  };
+  const parsedAlbum = isLastPlayedVideo
+    ? {
+        title: lastPlayedAlbum.text,
+        url: `${origin}/${albumEndpoint}/${lastPlayedAlbum.navigationEndpoint.browseEndpoint.browseId}`,
+      }
+    : null;
+
   const lastPlayedArtists = isLastPlayedVideo
     ? null
     : lastPlayed.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text
