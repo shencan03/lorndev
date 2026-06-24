@@ -8,6 +8,7 @@ import Link from "next/link";
 export default function LastPlayedCard() {
   const { data } = useSWR("lastplayed", getLastPlayed, {
     refreshInterval: 3000,
+    suspense: true,
   });
   const { title, url, thumbnailurl, artists, album } = data!;
   return (
