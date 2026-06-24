@@ -4,12 +4,14 @@ import { getLastPlayed } from "@/app/lib/last-played";
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
+import LastPlayedCardSkeleton from "@/app/ui/LastPlayedCardSkeletion";
 
 export default function LastPlayedCard() {
-  const { data } = useSWR("lastplayed", getLastPlayed, {
+  const { data, isLoading } = useSWR("lastplayed", getLastPlayed, {
     refreshInterval: 3000,
-    suspense: true,
   });
+
+  if (isLoading) return <LastPlayedCardSkeleton />;
   const { title, url, thumbnailurl, artists, album } = data!;
   return (
     <div className="flex justify-start items-center">
