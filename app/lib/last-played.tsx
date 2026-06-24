@@ -60,7 +60,7 @@ function formatLastPlayed(data: any) {
       .musicResponsiveListItemRenderer;
 
   const lastPlayedThumbNailUrl =
-    lastPlayed.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails[0].url;
+    lastPlayed.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails[1].url;
 
   const lastPlayedTitle =
     lastPlayed.flexColumns[0].musicResponsiveListItemFlexColumnRenderer.text
@@ -88,14 +88,15 @@ function formatLastPlayed(data: any) {
       }
     : null;
 
-  const lastPlayedArtists = isLastPlayedVideo
+  const lastPlayedArtist = isLastPlayedVideo
     ? null
     : lastPlayed.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text
-        .runs;
+        .runs[0];
 
-  const parsedArtists = isLastPlayedVideo
+  const parsedArtist = isLastPlayedVideo
     ? null
-    : lastPlayedArtists.map((artist: any) => {
+    : (() => {
+        const artist = lastPlayedArtist;
         const urlValid = artist.navigationEndpoint;
         const url =
           urlValid &&
@@ -104,27 +105,27 @@ function formatLastPlayed(data: any) {
           title: artist.text,
           url: urlValid ? url : null,
         };
-      });
+      })();
 
   return {
     title: lastPlayedTitle,
     url: lastPlayedUrl,
     thumbnailurl: lastPlayedThumbNailUrl,
     album: parsedAlbum,
-    artists: parsedArtists,
+    artist: parsedArtist,
   };
 }
 
 export async function getLastPlayed(): Promise<LastPlayed> {
   const data = await fetchLastPlayed();
   // writeJsonResponse(data);
-  const { title, url, thumbnailurl, artists, album } = formatLastPlayed(data);
+  const { title, url, thumbnailurl, artist, album } = formatLastPlayed(data);
 
   return {
     title,
     url,
     thumbnailurl,
-    artists,
+    artist,
     album,
   };
 }
