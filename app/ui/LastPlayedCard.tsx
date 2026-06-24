@@ -15,20 +15,46 @@ export default function LastPlayedCard({ className }: { className?: string }) {
   if (isLoading) return <LastPlayedCardSkeleton />;
   const { title, url, thumbnailurl, artists, album } = data!;
   return (
-    <div className={`flex items-center gap-x-2 sm:gap-x-4 px-2 ${className}`}>
-      <Link href={url} className="border-r shrink-0 pr-2 sm:pr-4">
-        <Image
-          src={thumbnailurl}
-          alt="small thumbnail of lastplayed song"
-          width={60}
-          height={60}
-          className="w-[32px] h-[32px] sm:w-[60px] sm:h-[60px]"
-        />
+    <div className={`flex items-center gap-x-3 sm:gap-x-4 px-2 ${className}`}>
+      {/* ── Spinning CD ── */}
+      <Link href={url} className="shrink-0 group" aria-label="Go to track">
+        <div className="relative w-[48px] h-[48px] sm:w-[64px] sm:h-[64px] animate-spin-slow group-hover:[animation-play-state:paused]">
+          {/* Silver rim */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 via-white/5 to-white/15" />
+
+          {/* Album art */}
+          <div className="absolute inset-[3px] sm:inset-[4px] rounded-full overflow-hidden">
+            <Image
+              src={thumbnailurl}
+              alt={`Album art for ${title}`}
+              width={120}
+              height={120}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Iridescent CD sheen overlay */}
+          <div
+            className="absolute inset-[3px] sm:inset-[4px] rounded-full pointer-events-none opacity-30"
+            style={{
+              background: "conic-gradient(from 0deg, transparent, rgba(255,100,100,0.3), transparent, rgba(100,200,255,0.3), transparent, rgba(100,255,150,0.3), transparent)",
+            }}
+          />
+
+          {/* Center hole */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[8px] h-[8px] sm:w-[10px] sm:h-[10px] rounded-full bg-background ring-1 ring-white/10" />
+          </div>
+        </div>
       </Link>
 
-      <section>
+      {/* ── Track info ── */}
+      <section className="min-w-0">
+        <span className="block text-[10px] sm:text-xs uppercase tracking-widest text-gray-500 leading-none mb-0.5">
+          Last Played
+        </span>
         <Link
-          className="text-sm tracking-tight text-ellipsis sm:text-lg line-clamp-1"
+          className="block text-sm tracking-tight sm:text-lg leading-tight line-clamp-1 hover:underline"
           href={url}
         >
           {title}
@@ -38,21 +64,21 @@ export default function LastPlayedCard({ className }: { className?: string }) {
             ? artists.map((artist) => {
                 return artist.url ? (
                   <Link
-                    className="text-xs line-clamp-1 sm:text-base sm:line-clamp-none text-gray-400"
+                    className="text-xs line-clamp-1 sm:text-base sm:line-clamp-none text-gray-400 hover:text-gray-200 transition-colors"
                     key={artist.title}
                     href={artist.url}
                   >
                     {artist.title}
                   </Link>
                 ) : (
-                  <span className="text-xs sm:text-base line-clamp-1">
+                  <span className="text-xs sm:text-base line-clamp-1 text-gray-400">
                     {artist.title}
                   </span>
                 );
               })
             : null}
           {album ? (
-            <Link className="hidden sm:block text-base" href={album.url}>
+            <Link className="hidden sm:block text-base text-gray-400 hover:text-gray-200 transition-colors" href={album.url}>
               {album.title}
             </Link>
           ) : null}
@@ -61,3 +87,4 @@ export default function LastPlayedCard({ className }: { className?: string }) {
     </div>
   );
 }
+
