@@ -48,7 +48,7 @@ async function fetchLastPlayed() {
   return data;
 }
 
-function parseLastPlayed(data: any) {
+function formatLastPlayed(data: any) {
   const origin = YT_MUSIC_ORIGIN;
   const videoEndpoint = YT_MUSIC_VIDEO_ENDPOINT;
   const artistEndpoint = YT_MUSIC_ARTIST_ENDPOINT;
@@ -116,7 +116,7 @@ function parseLastPlayed(data: any) {
 export async function getLastPlayed(): Promise<LastPlayed> {
   const data = await fetchLastPlayed();
   // writeJsonResponse(data);
-  const { title, url, thumbnailurl, artists, album } = parseLastPlayed(data);
+  const { title, url, thumbnailurl, artists, album } = formatLastPlayed(data);
 
   return {
     title,
