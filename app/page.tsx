@@ -1,7 +1,7 @@
 export default function Home() {
   return (
-    <article className="grid grid-cols-12">
-      <section className="col-span-12 sm:col-span-8 sm:col-start-3">
+    <article className="flex flex-col">
+      <section>
         <h1 className="text-3xl text-center underline pb-10">
           Why bother making this website?
         </h1>
