@@ -8,7 +8,7 @@ import LastPlayedCardSkeleton from "@/app/ui/LastPlayedCardSkeletion";
 
 export default function LastPlayedCard({ className }: { className?: string }) {
   const { data, isLoading } = useSWR("lastplayed", getLastPlayed, {
-    refreshInterval: 300000,
+    refreshInterval: 3000,
     revalidateOnFocus: false,
   });
 
