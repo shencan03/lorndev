@@ -59,9 +59,6 @@ function formatLastPlayed(data: any) {
       .sectionListRenderer.contents[0].musicShelfRenderer.contents[0]
       .musicResponsiveListItemRenderer;
 
-  const lastPlayedThumbNailUrl =
-    lastPlayed.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails[1].url;
-
   const lastPlayedTitle =
     lastPlayed.flexColumns[0].musicResponsiveListItemFlexColumnRenderer.text
       .runs[0].text;
@@ -75,6 +72,10 @@ function formatLastPlayed(data: any) {
       .runs[0].navigationEndpoint.watchEndpoint
       .watchEndpointMusicSupportedConfigs.watchEndpointMusicConfig
       .musicVideoType === "MUSIC_VIDEO_TYPE_UGC";
+
+  const lastPlayedThumbNailUrl = isLastPlayedVideo
+    ? lastPlayed.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails[0].url
+    : lastPlayed.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails[1].url;
 
   const lastPlayedAlbum = isLastPlayedVideo
     ? lastPlayed.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text
