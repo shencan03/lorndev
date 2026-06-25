@@ -20,9 +20,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceMono.className} antialiased min-h-full`}>
+      <body
+        className={`${spaceMono.className} antialiased flex flex-col min-h-screen`}
+      >
         <Navbar />
-        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14 bg-[#14001C] min-h-screen">
+        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14 bg-[#14001C] flex-1">
           {children}
         </main>
       </body>

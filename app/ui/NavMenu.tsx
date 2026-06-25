@@ -3,6 +3,7 @@ import type { NavLink } from "@/app/lib/definitions";
 import Link from "next/link";
 import Logo from "@/app/ui/Logo";
 import LastPlayedCard from "@/app/ui/LastPlayedCard";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function NavMenu({
   links,
@@ -12,12 +13,12 @@ export default function NavMenu({
   className?: string;
 }) {
   return (
-    <nav
+    <header
       className={`sm:flex sm:justify-between sm:px-4 sm:py-2 sm:border-b sm:items-center ${className}`}
     >
       <Logo className="text-xl" />
       <LastPlayedCard />
-      <div>
+      <nav>
         {links.map((link) => {
           return (
             <Button
@@ -30,7 +31,7 @@ export default function NavMenu({
             </Button>
           );
         })}
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }

@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <>
       <NavMenu links={links} className="hidden" />
-      <HamburgerMenu links={links} className="sm:hidden" />
+      <HamburgerMenu className="sm:hidden" />
     </>
   );
 }
