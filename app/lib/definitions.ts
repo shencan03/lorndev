@@ -29,3 +29,10 @@ export interface LastPlayed extends Artist, Album {
   album?: Album | null;
   artist?: Artist | null;
 }
+
+export interface BlogPost {
+  url: string;
+  content: string;
+  createdAt: string;
+  editedAt: string;
+}
