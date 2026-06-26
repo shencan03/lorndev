@@ -10,6 +10,7 @@ export default function LastPlayedCard({ className }: { className?: string }) {
   const { data, isLoading } = useSWR("lastplayed", getLastPlayed, {
     refreshInterval: 3000,
     revalidateOnFocus: false,
+    dedupingInterval: 9000,
   });
 
   if (isLoading) return <LastPlayedCardSkeleton />;
