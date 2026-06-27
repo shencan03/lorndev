@@ -3,7 +3,6 @@ import type { NavLink } from "@/app/lib/definitions";
 import Link from "next/link";
 import Logo from "@/app/ui/Logo";
 import LastPlayedCard from "@/app/ui/LastPlayedCard";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function NavMenu({
   links,
