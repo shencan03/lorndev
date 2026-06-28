@@ -44,6 +44,8 @@ export async function signout() {
   await auth.api.signOut({
     headers: await headers(),
   });
+
+  redirect("/");
 }
 
 export async function getSession() {
