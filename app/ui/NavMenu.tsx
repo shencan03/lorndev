@@ -3,6 +3,7 @@ import type { NavLink } from "@/app/lib/definitions";
 import Link from "next/link";
 import Logo from "@/app/ui/Logo";
 import LastPlayedCard from "@/app/ui/LastPlayedCard";
+import Signout from "@/app/ui/sign-out";
 
 export default function NavMenu({
   links,
@@ -30,6 +31,7 @@ export default function NavMenu({
             </Button>
           );
         })}
+        <Signout />
       </nav>
     </header>
   );

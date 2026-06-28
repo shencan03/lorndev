@@ -24,8 +24,8 @@ export default function RootLayout({
         className={`${spaceMono.className} antialiased flex flex-col min-h-screen`}
       >
         <Navbar />
-        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14 bg-[#14001C] flex-1">
-          {children}
+        <main className="m-auto max-w-7xl px-4 py-10 sm:py-14 bg-[#14001C] w-screen flex-1 grid grid-cols-12">
+          <div className="col-span-12 text-center">{children}</div>
         </main>
       </body>
     </html>

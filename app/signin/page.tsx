@@ -1,14 +1,10 @@
-import Form from "next/form";
-import { signin } from "@/app/lib/actions";
+import { getSession } from "@/app/lib/actions";
+import SigninForm from "@/app/ui/sign-in";
 
-export default function Signin() {
-  return (
-    <div>
-      <Form action={signin}>
-        <input name="email" />
-        <input name="password" />
-        <button type="submit">login</button>
-      </Form>
-    </div>
-  );
+export default async function Signin() {
+  const session = await getSession();
+  if (session) {
+    return <div>You are already signed in.</div>;
+  }
+  return <SigninForm />;
 }

@@ -1,7 +1,6 @@
 import NavMenu from "@/app/ui/NavMenu";
 import type { NavLink } from "@/app/lib/definitions";
 import HamburgerMenu from "@/app/ui/HamburgerMenu";
-import SignOut from "@/app/ui/sign-out";
 
 const links: NavLink[] = [
   { link: "home", href: "/" },
@@ -9,12 +8,11 @@ const links: NavLink[] = [
   { link: "blog", href: "/blog" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ className }: { className?: string }) {
   return (
     <>
       <NavMenu links={links} className="hidden" />
       <HamburgerMenu className="sm:hidden" />
-      <SignOut />
     </>
   );
 }

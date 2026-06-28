@@ -1,5 +1,3 @@
-import { Menu } from "lucide-react";
-import type { NavLink } from "@/app/lib/definitions";
 import Logo from "@/app/ui/Logo";
 import LastPlayedCard from "@/app/ui/LastPlayedCard";
 
