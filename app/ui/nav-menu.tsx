@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import type { NavLink } from "@/app/lib/definitions";
 import Link from "next/link";
-import Logo from "@/app/ui/Logo";
-import LastPlayedCard from "@/app/ui/LastPlayedCard";
+import Logo from "@/app/ui/logo";
+import LastPlayedCard from "@/app/ui/last-played-card";
 import Signout from "@/app/ui/sign-out";
 
 export default function NavMenu({
@@ -21,14 +20,9 @@ export default function NavMenu({
       <nav>
         {links.map((link) => {
           return (
-            <Button
-              key={link.link}
-              variant="link"
-              className="text-white"
-              asChild
-            >
-              <Link href={link.href}>{link.link}</Link>
-            </Button>
+            <Link key={link.link} href={link.href}>
+              {link.link}
+            </Link>
           );
         })}
         <Signout />

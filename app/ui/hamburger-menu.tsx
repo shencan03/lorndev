@@ -1,5 +1,5 @@
-import Logo from "@/app/ui/Logo";
-import LastPlayedCard from "@/app/ui/LastPlayedCard";
+import Logo from "@/app/ui/logo";
+import LastPlayedCard from "@/app/ui/last-played-card";
 
 export default function HamburgerMenu({ className }: { className?: string }) {
   return (

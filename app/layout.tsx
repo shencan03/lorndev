@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "@/app/globals.css";
 import { Space_Mono } from "next/font/google";
-import Navbar from "@/app/ui/Navbar";
+import Navbar from "@/app/ui/nav-bar";
+import "highlight.js/styles/atom-one-dark.css";
 
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
@@ -25,7 +26,7 @@ export default function RootLayout({
       >
         <Navbar />
         <main className="m-auto max-w-7xl px-4 py-10 sm:py-14 bg-[#14001C] w-screen flex-1 grid grid-cols-12">
-          <div className="col-span-12 text-center">{children}</div>
+          <div className="col-span-12">{children}</div>
         </main>
       </body>
     </html>

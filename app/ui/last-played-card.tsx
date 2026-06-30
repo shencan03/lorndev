@@ -4,7 +4,7 @@ import { getLastPlayed } from "@/app/lib/last-played";
 import useSWR from "swr";
 import Image from "next/image";
 import Link from "next/link";
-import LastPlayedCardSkeleton from "@/app/ui/LastPlayedCardSkeletion";
+import LastPlayedCardSkeleton from "@/app/ui/last-played-card-skeleton";
 
 export default function LastPlayedCard({ className }: { className?: string }) {
   const { data, isLoading } = useSWR("lastplayed", getLastPlayed, {
@@ -18,7 +18,7 @@ export default function LastPlayedCard({ className }: { className?: string }) {
   return (
     <div className={`flex items-center gap-x-3 sm:gap-x-4 px-2 ${className}`}>
       <Link href={url} className="shrink-0 group" aria-label="Go to track">
-        <div className="relative w-[48px] h-[48px] sm:w-[64px] sm:h-[64px] animate-spin-slow group-hover:[animation-play-state:paused]">
+        <div className="relative w-[48px] h-[48px] sm:w-[64px] sm:h-[64px] ">
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 via-white/5 to-white/15" />
           <div className="absolute inset-[3px] sm:inset-[4px] rounded-full overflow-hidden">
             <Image

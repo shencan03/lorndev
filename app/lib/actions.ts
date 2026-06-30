@@ -11,6 +11,10 @@ const signinSchema = z.object({
   password: z.string().min(8),
 });
 
+const postSchema = z.object({
+  content: z.string(),
+});
+
 export async function signin(prevState: any, formdata: FormData) {
   const credentials = signinSchema.safeParse({
     email: formdata.get("email"),

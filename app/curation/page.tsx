@@ -1,7 +1,7 @@
-import IndexCard from "@/app/ui/IndexCard";
-import MovieCard from "@/app/ui/MovieCard";
-import PeopleCard from "@/app/ui/PeopleCard";
-import BooksCard from "@/app/ui/BooksCard";
+import IndexCard from "@/app/ui/index-card";
+import MovieCard from "@/app/ui/movie-card";
+import PeopleCard from "@/app/ui/people-card";
+import BooksCard from "@/app/ui/books-card";
 
 const curationList = [
   { title: "Movies", href: "/curation#movies" },

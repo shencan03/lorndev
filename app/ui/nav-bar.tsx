@@ -1,6 +1,6 @@
-import NavMenu from "@/app/ui/NavMenu";
+import NavMenu from "@/app/ui/nav-menu";
 import type { NavLink } from "@/app/lib/definitions";
-import HamburgerMenu from "@/app/ui/HamburgerMenu";
+import HamburgerMenu from "@/app/ui/hamburger-menu";
 
 const links: NavLink[] = [
   { link: "home", href: "/" },
