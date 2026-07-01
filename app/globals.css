@@ -7,6 +7,12 @@
   content: none;
 }
 
+.prose-white :where(code):not(:where(pre *)) {
+  background-color: #2a1f2e;
+  padding: 0.2em 0.4em;
+  border-radius: 0.5rem;
+}
+
 :root {
   --background: #120018;
   --foreground: #ffffff;
@@ -21,6 +27,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -28,41 +35,6 @@ body {
 
 @utility animate-spin-slow {
   animation: spin-slow 4s linear infinite;
-}
-
-@utility prose-purple {
-  --tw-prose-body: var(--color-purple-800);
-  --tw-prose-headings: var(--color-purple-900);
-  --tw-prose-lead: var(--color-purple-700);
-  --tw-prose-links: var(--color-purple-900);
-  --tw-prose-bold: var(--color-purple-900);
-  --tw-prose-counters: var(--color-purple-600);
-  --tw-prose-bullets: var(--color-purple-400);
-  --tw-prose-hr: var(--color-purple-300);
-  --tw-prose-quotes: var(--color-purple-900);
-  --tw-prose-quote-borders: var(--color-purple-300);
-  --tw-prose-captions: var(--color-purple-700);
-  --tw-prose-code: var(--color-purple-900);
-  --tw-prose-pre-code: var(--color-purple-100);
-  --tw-prose-pre-bg: var(--color-purple-900);
-  --tw-prose-th-borders: var(--color-purple-300);
-  --tw-prose-td-borders: var(--color-purple-200);
-  --tw-prose-invert-body: var(--color-purple-200);
-  --tw-prose-invert-headings: var(--color-white);
-  --tw-prose-invert-lead: var(--color-purple-300);
-  --tw-prose-invert-links: var(--color-white);
-  --tw-prose-invert-bold: var(--color-white);
-  --tw-prose-invert-counters: var(--color-purple-400);
-  --tw-prose-invert-bullets: var(--color-purple-600);
-  --tw-prose-invert-hr: var(--color-purple-700);
-  --tw-prose-invert-quotes: var(--color-purple-100);
-  --tw-prose-invert-quote-borders: var(--color-purple-700);
-  --tw-prose-invert-captions: var(--color-purple-400);
-  --tw-prose-invert-code: var(--color-white);
-  --tw-prose-invert-pre-code: var(--color-purple-300);
-  --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%);
-  --tw-prose-invert-th-borders: var(--color-purple-600);
-  --tw-prose-invert-td-borders: var(--color-purple-700);
 }
 
 @utility prose-white {

@@ -43,7 +43,10 @@ export default function NewPost() {
 
   return (
     <div className="border-t rounded-xl border-gray-300 h-full">
-      <form action={handlePreview} className="h-full prose prose-white max-w-none">
+      <form
+        action={handlePreview}
+        className="h-full prose prose-base sm:prose-base prose-white max-w-none"
+      >
         <button type="submit">Preview</button>
         {!preview && <label htmlFor="content"></label>}
         {!preview && (
@@ -56,7 +59,7 @@ export default function NewPost() {
             onKeyDown={handleTab}
           />
         )}
-        {preview && <Post content={content} className="w-full h-full" />}
+        {preview && <Post content={content} />}
       </form>
     </div>
   );

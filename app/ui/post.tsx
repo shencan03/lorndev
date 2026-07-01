@@ -1,6 +1,5 @@
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
@@ -15,7 +14,7 @@ export default function Post({
   return (
     <Markdown
       rehypePlugins={[rehypeRaw, rehypeHighlight, rehypeSlug]}
-      remarkPlugins={[remarkGfm, remarkBreaks]}
+      remarkPlugins={[remarkGfm]}
     >
       {content}
     </Markdown>
