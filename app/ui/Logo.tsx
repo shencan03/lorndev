@@ -1,9 +1,13 @@
 import Link from "next/link";
+import Signout from "@/app/ui/sign-out";
 
-export default function Logo({ className }: { className?: string }) {
+export default function Logo() {
   return (
-    <Link href="/" className={`font-bold ${className}`}>
-      lorndev
-    </Link>
+    <div>
+      <Link href="/" className="font-bold text-xl text-mint">
+        lorndev
+      </Link>
+      <Signout />
+    </div>
   );
 }

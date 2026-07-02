@@ -1,6 +1,5 @@
-import Form from "next/form";
-import { signout } from "@/app/lib/actions";
 import { getSession } from "@/app/lib/actions";
+import { SignoutForm } from "@/app/ui/forms";
 
 export default async function Signout() {
   const session = await getSession();
@@ -9,9 +8,5 @@ export default async function Signout() {
     return;
   }
 
-  return (
-    <Form action={signout}>
-      <button type="submit">signout</button>
-    </Form>
-  );
+  return <SignoutForm />;
 }
