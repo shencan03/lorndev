@@ -7,7 +7,7 @@ export type IndexCardProps = {
   items: IndexCardItem[];
 };
 
-export type NavLink = {
+export type NavLinkProps = {
   link: string;
   href: string;
 };
