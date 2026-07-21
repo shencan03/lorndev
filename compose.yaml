@@ -1,0 +1,22 @@
+services:
+  lorndev-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: lorndev:dev
+    container_name: lorndev-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - WATCHPACK_POLLING=true
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+        - action: rebuild
+          path: package.json
+      
