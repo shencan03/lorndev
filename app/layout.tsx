@@ -22,9 +22,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(
-        "h-full",
-        "antialiased",
-        "font-mono",
+        "h-full antialiased font-mono dark",
         jetbrainsMono.variable,
       )}
     >

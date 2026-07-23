@@ -8,3 +8,4 @@ compose.yaml
 .env*
 README.md
 tsconfig.tsbuildinfo
+.husky/
