@@ -1,3 +1,3 @@
 # Lorndev
 
-Personal web-blog of lorndev.
+Personal web blog of lorndev.
