@@ -5,10 +5,11 @@ services:
       dockerfile: Dockerfile.dev
     image: lorndev:dev
     container_name: lorndev-dev
-    ports:
-      - "3000:3000"
     environment:
       - WATCHPACK_POLLING=true
+    ports:
+      - "3000:3000"
+
     develop:
       watch:
         - action: sync
