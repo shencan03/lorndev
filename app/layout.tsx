@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
+import Header from "@/app/ui/header";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -10,7 +11,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "lorndev",
-  description: "Personal web-blog of lorndev",
+  description: "Personal web blog of lorndev",
 };
 
 export default function RootLayout({
@@ -26,7 +27,10 @@ export default function RootLayout({
         jetbrainsMono.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col sm:mx-128 gap-4">
+        <Header />
+        <main className="px-4">{children}</main>
+      </body>
     </html>
   );
 }
