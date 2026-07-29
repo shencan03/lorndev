@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/app/ui/header";
+import Footer from "@/app/ui/footer";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -27,9 +28,10 @@ export default function RootLayout({
         jetbrainsMono.variable,
       )}
     >
-      <body className="min-h-full flex flex-col sm:mx-128 gap-4">
+      <body className="min-h-full flex flex-col sm:mx-128 justify-between gap-4">
         <Header />
-        <main className="px-4">{children}</main>
+        <main className="basis-0 sm:basis-4xl px-4">{children}</main>
+        <Footer />
       </body>
     </html>
   );
