@@ -6,6 +6,14 @@ import dockerfile from "highlight.js/lib/languages/dockerfile";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+      },
+    ],
+  },
 };
 
 const withMDX = createMDX({
