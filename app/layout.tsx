@@ -30,7 +30,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col sm:mx-128 justify-between gap-4">
         <Header />
-        <main className="basis-0 sm:basis-4xl px-4">{children}</main>
+        <main className="basis-4xl px-4 prose prose-sm sm:prose">
+          {children}
+        </main>
         <Footer />
       </body>
     </html>
