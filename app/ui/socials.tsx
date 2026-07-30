@@ -14,6 +14,7 @@ export default function Socials() {
         target="_blank"
         rel="noreferrer noopener"
         className={buttonVariants({ variant: "ghost", size: "icon" })}
+        prefetch={false}
       >
         <GithubLogoIcon size={32} />
       </Link>
@@ -22,6 +23,7 @@ export default function Socials() {
         target="_blank"
         rel="noreferrer noopener"
         className={buttonVariants({ variant: "ghost", size: "icon" })}
+        prefetch={false}
       >
         <InstagramLogoIcon size={32} />
       </Link>
@@ -30,6 +32,7 @@ export default function Socials() {
         target="_blank"
         rel="noreferrer noopener"
         className={buttonVariants({ variant: "ghost", size: "icon" })}
+        prefetch={false}
       >
         <LinkedinLogoIcon size={32} />
       </Link>
