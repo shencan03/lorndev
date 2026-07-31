@@ -8,7 +8,7 @@ import { TVs } from "@/app/lib/tmdb/catalogue/tv";
 import TVCard from "@/app/ui/tv-card";
 import { getTVCard } from "@/app/lib/tmdb/getTV";
 
-export default async function Curation() {
+export default async function TVCarousel() {
   const tvArr = await Promise.all(
     TVs.map(async (query) => await getTVCard(query)),
   );

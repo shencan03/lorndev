@@ -8,7 +8,7 @@ import { MOVIES } from "@/app/lib/tmdb/catalogue/movie";
 import MovieCard from "@/app/ui/movie-card";
 import { getMovieCard } from "@/app/lib/tmdb/getMovie";
 
-export default async function Curation() {
+export default async function MovieCarousel() {
   const moviesArr = await Promise.all(
     MOVIES.map(async (query) => await getMovieCard(query)),
   );
