@@ -17,9 +17,6 @@ WORKDIR /app
 # Copy project dependencies from dependencies stage
 COPY --from=dependencies /app/node_modules ./node_modules
 
-# Pass .env required in build but excluded from image
-RUN --mount=type=secret,id=tmdb_token,env=TMDB_TOKEN
-
 # Copy application source code
 COPY . .
 
