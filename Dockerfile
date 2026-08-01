@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG NODE_VERSION=26-alpine-dev
 
 FROM dhi.io/node:${NODE_VERSION} AS dependencies
@@ -24,7 +25,9 @@ COPY . .
 
 ENV NODE_ENV=production
 
-RUN corepack enable pnpm && pnpm build; 
+# Pass .env required in build but excluded from image
+RUN --mount=type=secret,id=tmdb_token,env=TMDB_TOKEN \
+  corepack enable pnpm && pnpm build; 
 FROM dhi.io/node:${NODE_VERSION} AS runner
 
 # Set working directory
