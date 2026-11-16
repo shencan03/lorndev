@@ -17,3 +17,14 @@ export interface MovieReview extends MovieCard {
 }
 
 export type MediaObj = "review" | "card";
+
+export type SongCard = {
+  title: string;
+  artists: string;
+  thumbnail: string;
+  videoId: string;
+};
+
+export interface SongReview extends SongCard {
+  review: string;
+}

@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "image.tmdb.org",
       },
+      {
+        // YouTube Music cover art (yt3./lh3.googleusercontent.com)
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+      },
     ],
   },
   output: "standalone",
