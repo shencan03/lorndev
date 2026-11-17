@@ -1,10 +1,10 @@
-// Writes your most recent YouTube Music liked songs to app/lib/ytmusic/catalogue/liked.json.
+// Writes all of your YouTube Music liked songs to app/lib/ytmusic/catalogue/liked.json.
 // The site build only reads that file, so the build never needs the Google session cookie.
 //
 //   node scripts/sync-liked-songs.mts
 //
 // YTM_AUTH_FILE  browser auth file from `npx yt-music-node browser` (default: browser.json)
-// SONG_LIMIT     how many of the most recent likes to keep (default: 24)
+// SONG_LIMIT     keep only this many of the most recent likes (default: the whole library)
 //
 // Exits non-zero if the auth file is missing or no longer signs in, or if no songs come back,
 // so an expired cookie fails loudly and never overwrites the last good list.
@@ -20,7 +20,7 @@ type SongCard = {
 
 const OUT_FILE = new URL("../app/lib/ytmusic/catalogue/liked.json", import.meta.url);
 const authFile = process.env.YTM_AUTH_FILE || "browser.json";
-const limit = Number(process.env.SONG_LIMIT || 24);
+const limit = process.env.SONG_LIMIT ? Number(process.env.SONG_LIMIT) : null;
 
 // Thumbnail URLs end in a size like "=w120-h120-l90-rj"; ask for a larger one.
 function largeThumbnail(url: string) {
@@ -50,6 +50,7 @@ async function main() {
     throw new Error(`${authFile} no longer signs in (no account name returned)`);
   }
 
+  // limit: null pages through the whole "Liked music" playlist.
   const liked = await ytm.getLikedSongs({ limit });
 
   const seen = new Set<string>();
@@ -65,7 +66,7 @@ async function main() {
       artists: (track.artists ?? []).map((artist) => artist.name).join(", "),
       thumbnail: largeThumbnail(thumbnail),
     });
-    if (songs.length >= limit) break;
+    if (limit != null && songs.length >= limit) break;
   }
 
   if (songs.length === 0) {
