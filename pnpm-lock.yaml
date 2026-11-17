@@ -34,6 +34,9 @@ importers:
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.4)
+      embla-carousel-wheel-gestures:
+        specifier: 8.1.0
+        version: 8.1.0(embla-carousel@8.6.0)
       fumadocs-core:
         specifier: ^16.12.1
         version: 16.12.1(@mdx-js/mdx@3.1.1(supports-color@7.2.0))(@types/estree-jsx@1.0.5)(@types/hast@3.0.5)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@1.26.0(react@19.2.4))(next@16.2.10(@babel/core@7.29.7(supports-color@7.2.0))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(supports-color@7.2.0)(zod@4.4.3)
@@ -2862,6 +2865,15 @@ packages:
       }
     peerDependencies:
       embla-carousel: 8.6.0
+
+  embla-carousel-wheel-gestures@8.1.0:
+    resolution:
+      {
+        integrity: sha512-J68jkYrxbWDmXOm2n2YHl+uMEXzkGSKjWmjaEgL9xVvPb3HqVmg6rJSKfI3sqIDVvm7mkeTy87wtG/5263XqHQ==,
+      }
+    engines: { node: ">=10" }
+    peerDependencies:
+      embla-carousel: ^8.0.0 || ~8.0.0-rc03
 
   embla-carousel@8.6.0:
     resolution:
@@ -6600,6 +6612,13 @@ packages:
         integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==,
       }
 
+  wheel-gestures@2.3.0:
+    resolution:
+      {
+        integrity: sha512-6b+PIXuKIy0ibVnF04GoijGKGIDwjlYSK7bCgicuQwPLivfjoLeCCK0bwbjyOdrStDTNPlyGFixIj0d0kZzwiQ==,
+      }
+    engines: { node: ">=18" }
+
   which-boxed-primitive@1.1.1:
     resolution:
       {
@@ -8448,6 +8467,11 @@ snapshots:
   embla-carousel-reactive-utils@8.6.0(embla-carousel@8.6.0):
     dependencies:
       embla-carousel: 8.6.0
+
+  embla-carousel-wheel-gestures@8.1.0(embla-carousel@8.6.0):
+    dependencies:
+      embla-carousel: 8.6.0
+      wheel-gestures: 2.3.0
 
   embla-carousel@8.6.0: {}
 
@@ -11304,6 +11328,8 @@ snapshots:
       vfile-message: 4.0.3
 
   web-namespaces@2.0.1: {}
+
+  wheel-gestures@2.3.0: {}
 
   which-boxed-primitive@1.1.1:
     dependencies:
