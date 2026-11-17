@@ -26,6 +26,17 @@ const nextConfig: NextConfig = {
     ],
   },
   output: "standalone",
+  // Serve one host only; canonical tags cover crawlers that skip redirects.
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.lorndev.com" }],
+        destination: "https://lorndev.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({
