@@ -1,0 +1,76 @@
+name: Sync liked songs
+
+# Refreshes app/lib/ytmusic/catalogue/liked.json from YouTube Music and, if it changed,
+# commits it and starts the Docker workflow. Runs on the self-hosted runner so the Google
+# session cookie never leaves that machine and is always used from the same IP.
+#
+# One-time setup on the runner machine (as the user the runner runs as):
+#   mkdir -p ~/.config/lorndev && chmod 700 ~/.config/lorndev
+#   npx yt-music-node browser --file ~/.config/lorndev/ytm-browser.json
+#   chmod 600 ~/.config/lorndev/ytm-browser.json
+#   npx yt-music-node verify --file ~/.config/lorndev/ytm-browser.json
+#
+# When the cookie expires this workflow fails (GitHub emails you); repeat the
+# `browser` step above and re-run it. The site keeps serving the last good list meanwhile.
+
+on:
+  schedule:
+    - cron: "17 4 * * *" # daily, 04:17 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: sync-songs
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the updated liked.json
+  actions: write # start the Docker workflow
+
+jobs:
+  sync:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+
+      # Only yt-music-node is needed; skip dev deps and the husky prepare script.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prod --ignore-scripts
+
+      - name: Fetch liked songs
+        run: |
+          YTM_AUTH_FILE="$HOME/.config/lorndev/ytm-browser.json" \
+            node scripts/sync-liked-songs.mts
+
+      - name: Commit and redeploy if changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- app/lib/ytmusic/catalogue/liked.json; then
+            echo "Liked songs unchanged; nothing to deploy."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/lib/ytmusic/catalogue/liked.json
+          git commit -m "chore(curation): sync liked songs"
+          git push origin HEAD:main
+          # Pushes made with GITHUB_TOKEN don't trigger `on: push`, but a dispatch does.
+          curl -fsS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/docker-publish.yml/dispatches" \
+            -d '{"ref":"main"}'

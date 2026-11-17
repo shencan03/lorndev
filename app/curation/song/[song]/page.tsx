@@ -1,12 +1,11 @@
-import { SONGS } from "@/app/lib/ytmusic/catalogue/song";
-import { getSong } from "@/app/lib/ytmusic/getSong";
+import { getSong, LIKED_SONGS } from "@/app/lib/ytmusic/getSong";
 import Image from "next/image";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return Object.keys(SONGS).map((query) => ({
-    song: query,
+  return LIKED_SONGS.map(({ videoId }) => ({
+    song: videoId,
   }));
 }
 
@@ -16,7 +15,7 @@ export default async function Page({
   params: Promise<{ song: string }>;
 }) {
   const { song } = await params;
-  const reviewObj = await getSong(decodeURIComponent(song), "review");
+  const reviewObj = getSong(song);
   return (
     <div className="flex">
       <a
@@ -30,7 +29,7 @@ export default async function Page({
           className="object-cover not-prose"
         />
       </a>
-      <p>{reviewObj.review}</p>
+      {reviewObj.review && <p>{reviewObj.review}</p>}
     </div>
   );
 }

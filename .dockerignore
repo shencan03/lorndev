@@ -9,3 +9,4 @@ compose.yaml
 README.md
 tsconfig.tsbuildinfo
 .husky/
+browser.json

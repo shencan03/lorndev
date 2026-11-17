@@ -8,6 +8,8 @@ name: Docker
 on:
   push:
     branches: ["main"]
+  # Started by sync-songs.yml after it commits new liked songs.
+  workflow_dispatch:
 
 env:
   # Use docker.io for Docker Hub if empty
