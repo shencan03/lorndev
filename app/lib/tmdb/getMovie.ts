@@ -3,7 +3,7 @@ import type { MovieCard } from "@/app/lib/definitions";
 import type { MovieEntry } from "@/app/lib/tmdb/catalogue/movie";
 
 const baseUrl = "https://api.themoviedb.org/3/movie";
-const posterUrl = "https://image.tmdb.org/t/p/original";
+const posterUrl = "https://image.tmdb.org/t/p/w342";
 
 const MovieSchema = z.object({
   title: z.string(),
