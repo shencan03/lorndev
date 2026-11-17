@@ -35,16 +35,18 @@ jobs:
         with:
           ref: main
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 12.16.1
-
+      # Node first: the server has no system Node, and pnpm's installer needs one.
+      # No `cache:` here; it would need pnpm already installed, and a self-hosted
+      # runner keeps its pnpm store between runs anyway.
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 26
-          cache: pnpm
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.16.1
 
       # Only yt-music-node is needed; skip dev deps and the husky prepare script.
       - name: Install dependencies
