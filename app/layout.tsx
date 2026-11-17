@@ -11,8 +11,16 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "lorndev",
+  metadataBase: new URL("https://lorndev.com"),
+  title: { default: "lorndev", template: "%s · lorndev" },
   description: "Personal web blog of lorndev",
+  openGraph: {
+    siteName: "lorndev",
+    type: "website",
+    locale: "en_US",
+    url: "/",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({
