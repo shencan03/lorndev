@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/app/ui/header";
 import Footer from "@/app/ui/footer";
+import { SITE_URL } from "@/app/lib/site";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lorndev.com"),
+  metadataBase: new URL(SITE_URL),
   title: { default: "lorndev", template: "%s · lorndev" },
   description: "Personal web blog of lorndev",
   openGraph: {
@@ -21,6 +22,12 @@ export const metadata: Metadata = {
     url: "/",
   },
   twitter: { card: "summary_large_image" },
+};
+
+// The site is dark-only: tint the mobile browser chrome and native controls.
+export const viewport: Viewport = {
+  themeColor: "#0c090c",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
