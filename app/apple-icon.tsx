@@ -1,4 +1,4 @@
-import { renderIcon } from "@/app/lib/icon";
+import { renderIcon } from "@/app/lib/render-icon";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
