@@ -130,13 +130,154 @@ function Carousel({
         {...props}
       >
         {children}
+        <CarouselScrollbar />
       </div>
     </CarouselContext.Provider>
   );
 }
 
+// Thin progress bar that only appears while the carousel is moving, so users can see
+// how much is left without a permanent scrollbar. Updated via refs to avoid re-rendering
+// every frame.
+function CarouselScrollbar() {
+  const { api, orientation } = useCarousel();
+  const thumbRef = React.useRef<HTMLDivElement>(null);
+  const [scrollable, setScrollable] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!api) return;
+    const horizontal = orientation === "horizontal";
+    let hideTimer: ReturnType<typeof setTimeout> | undefined;
+    let pointerDown = false;
+    let thumbSize = 1;
+
+    const measure = () => {
+      const root = api.rootNode();
+      const container = api.containerNode();
+      const viewport = horizontal ? root.clientWidth : root.clientHeight;
+      const content = horizontal
+        ? container.scrollWidth
+        : container.scrollHeight;
+      thumbSize = content > 0 ? Math.min(1, viewport / content) : 1;
+      setScrollable(api.canScrollNext() || api.canScrollPrev());
+      update();
+    };
+
+    const update = () => {
+      const thumb = thumbRef.current;
+      if (!thumb) return;
+      const progress = Math.max(0, Math.min(1, api.scrollProgress()));
+      const offset = progress * (1 - thumbSize) * 100;
+      thumb.style[horizontal ? "width" : "height"] = `${thumbSize * 100}%`;
+      thumb.style.transform = horizontal
+        ? `translateX(${offset / thumbSize}%)`
+        : `translateY(${offset / thumbSize}%)`;
+    };
+
+    const scheduleHide = () => {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        if (!pointerDown) setVisible(false);
+      }, 800);
+    };
+
+    const onScroll = () => {
+      update();
+      setVisible(true);
+      scheduleHide();
+    };
+    const onPointerDown = () => {
+      pointerDown = true;
+      clearTimeout(hideTimer);
+    };
+    const onPointerUp = () => {
+      pointerDown = false;
+      scheduleHide();
+    };
+
+    measure();
+    api.on("reInit", measure);
+    api.on("resize", measure);
+    api.on("scroll", onScroll);
+    api.on("pointerDown", onPointerDown);
+    api.on("pointerUp", onPointerUp);
+
+    return () => {
+      clearTimeout(hideTimer);
+      api.off("reInit", measure);
+      api.off("resize", measure);
+      api.off("scroll", onScroll);
+      api.off("pointerDown", onPointerDown);
+      api.off("pointerUp", onPointerUp);
+    };
+  }, [api, orientation]);
+
+  if (!scrollable) return null;
+
+  return (
+    <div
+      aria-hidden
+      data-slot="carousel-scrollbar"
+      className={cn(
+        "pointer-events-none absolute overflow-hidden rounded-full bg-foreground/10 transition-opacity duration-300",
+        orientation === "horizontal"
+          ? "inset-x-3 bottom-1.5 h-0.5"
+          : "inset-y-3 right-1.5 w-0.5",
+        visible ? "opacity-100" : "opacity-0",
+      )}
+    >
+      <div
+        ref={thumbRef}
+        className={cn(
+          "rounded-full bg-foreground/50",
+          orientation === "horizontal" ? "h-full" : "w-full",
+        )}
+      />
+    </div>
+  );
+}
+
+// Edge fade length in px. Each edge fades only when there's more content past it, and the
+// fade shrinks as you approach the end so it doesn't pop in or out.
+const EDGE_FADE = 48;
+
 function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
-  const { carouselRef, orientation } = useCarousel();
+  const { carouselRef, api, orientation } = useCarousel();
+
+  React.useEffect(() => {
+    if (!api) return;
+    const horizontal = orientation === "horizontal";
+
+    const update = () => {
+      const root = api.rootNode();
+      const container = api.containerNode();
+      const viewport = horizontal ? root.clientWidth : root.clientHeight;
+      const content = horizontal
+        ? container.scrollWidth
+        : container.scrollHeight;
+      const overflow = Math.max(0, content - viewport);
+      const progress = Math.max(0, Math.min(1, api.scrollProgress()));
+      const start = Math.min(EDGE_FADE, progress * overflow);
+      const end = Math.min(EDGE_FADE, (1 - progress) * overflow);
+      const mask =
+        overflow > 0
+          ? `linear-gradient(to ${horizontal ? "right" : "bottom"}, transparent, black ${start}px, black calc(100% - ${end}px), transparent)`
+          : "";
+      root.style.maskImage = mask;
+      root.style.webkitMaskImage = mask;
+    };
+
+    update();
+    api.on("reInit", update);
+    api.on("resize", update);
+    api.on("scroll", update);
+    return () => {
+      api.off("reInit", update);
+      api.off("resize", update);
+      api.off("scroll", update);
+    };
+  }, [api, orientation]);
 
   return (
     <div
