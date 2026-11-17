@@ -24,7 +24,3 @@ export type SongCard = {
   thumbnail: string;
   videoId: string;
 };
-
-export interface SongReview extends SongCard {
-  review: string;
-}
