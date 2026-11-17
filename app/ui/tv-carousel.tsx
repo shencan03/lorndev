@@ -7,37 +7,26 @@ import {
 import { TVs } from "@/app/lib/tmdb/catalogue/tv";
 import TVCard from "@/app/ui/tv-card";
 import { getTV } from "@/app/lib/tmdb/getTV";
-import Link from "next/link";
 
 export default async function TVCarousel() {
-  const tvArr = await Promise.all(
-    Object.keys(TVs).map(async (query) => {
-      const tv = await getTV(query, "card");
-
-      return (
-        <CarouselItem key={tv.name} className="basis-1/2.1">
-          <Link href={`/curation/tv/${query}`}>
-            <TVCard tv={tv} />
-          </Link>
-        </CarouselItem>
-      );
-    }),
-  );
-
-  if (!tvArr) {
-    return <div>Failed to get tvs</div>;
-  }
+  const tvs = await Promise.all(TVs.map((query) => getTV(query)));
 
   return (
-    <>
-      <Carousel
-        opts={{
-          dragFree: true,
-        }}
-        className="border"
-      >
-        <CarouselContent>{tvArr}</CarouselContent>
-      </Carousel>
-    </>
+    <Carousel
+      opts={{
+        dragFree: true,
+      }}
+      className="border"
+    >
+      <CarouselContent>
+        {tvs.map((tv) => (
+          <CarouselItem key={tv.url} className="basis-1/2.1">
+            <a href={tv.url} target="_blank" rel="noopener noreferrer">
+              <TVCard tv={tv} />
+            </a>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }

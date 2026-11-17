@@ -1,33 +1,33 @@
 import { z } from "zod";
 
-const urlBase = "https://api.themoviedb.org/3/search/tv";
+const baseUrl = "https://api.themoviedb.org/3/search/tv";
 
 const SearchSchema = z.object({
   results: z.array(
     z.object({
       id: z.number(),
+      name: z.string(),
+      poster_path: z.string().nullable(),
     }),
   ),
 });
 
 export default async function searchTV(query: string) {
-  const url = `${urlBase}?query=${encodeURIComponent(query)}`;
-  try {
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
-      },
-    });
+  const params = new URLSearchParams({ query });
 
-    if (!res.ok) {
-      throw new Error(`TMDB fetch failed with code ${res.status}`);
-    }
-    const rawData = await res.json();
-    const data = SearchSchema.parse(rawData);
-    return data.results[0].id;
-  } catch (e) {
-    console.error(e);
+  const res = await fetch(`${baseUrl}?${params}`, {
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`TMDB fetch failed with code ${res.status}`);
   }
+
+  const match = SearchSchema.parse(await res.json()).results[0];
+  if (!match) {
+    throw new Error(`No TMDB TV series found for "${query}"`);
+  }
+  return match;
 }

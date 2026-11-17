@@ -7,36 +7,26 @@ import {
 import { MOVIES } from "@/app/lib/tmdb/catalogue/movie";
 import MovieCard from "@/app/ui/movie-card";
 import { getMovie } from "@/app/lib/tmdb/getMovie";
-import Link from "next/link";
 
 export default async function MovieCarousel() {
-  const moviesArr = await Promise.all(
-    Object.keys(MOVIES).map(async (query) => {
-      const movie = await getMovie(query, "card");
-      return (
-        <CarouselItem key={movie.title} className="basis-1/2.1">
-          <Link href={`/curation/movie/${query}`}>
-            <MovieCard movie={movie} />
-          </Link>
-        </CarouselItem>
-      );
-    }),
-  );
-
-  if (!moviesArr) {
-    return <div>Failed to get movies</div>;
-  }
+  const movies = await Promise.all(MOVIES.map(getMovie));
 
   return (
-    <>
-      <Carousel
-        opts={{
-          dragFree: true,
-        }}
-        className="border"
-      >
-        <CarouselContent>{moviesArr}</CarouselContent>
-      </Carousel>
-    </>
+    <Carousel
+      opts={{
+        dragFree: true,
+      }}
+      className="border"
+    >
+      <CarouselContent>
+        {movies.map((movie) => (
+          <CarouselItem key={movie.url} className="basis-1/2.1">
+            <a href={movie.url} target="_blank" rel="noopener noreferrer">
+              <MovieCard movie={movie} />
+            </a>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }

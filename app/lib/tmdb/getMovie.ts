@@ -1,47 +1,32 @@
 import { z } from "zod";
-import searchMovie from "@/app/lib/tmdb/searchMovie";
-import { MediaObj, MovieCard, MovieReview } from "@/app/lib/definitions";
-import { MOVIES } from "@/app/lib/tmdb/catalogue/movie";
+import type { MovieCard } from "@/app/lib/definitions";
+import type { MovieEntry } from "@/app/lib/tmdb/catalogue/movie";
 
 const baseUrl = "https://api.themoviedb.org/3/movie";
-const posterUrl = "https://image.tmdb.org/t/p";
+const posterUrl = "https://image.tmdb.org/t/p/original";
 
 const MovieSchema = z.object({
   title: z.string(),
   poster_path: z.string(),
 });
 
-export function getMovie(query: string, type: "card"): Promise<MovieCard>;
-
-export function getMovie(query: string, type: "review"): Promise<MovieReview>;
-
-export async function getMovie(query: string, type: MediaObj) {
-  const id = await searchMovie(query);
-  const url = `${baseUrl}/${id}`;
-
-  try {
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`TMDB fetch failed with code ${res.status}`);
-    }
-
-    const rawData = await res.json();
-    const data = MovieSchema.parse(rawData);
-    data.poster_path = `${posterUrl}/original${data.poster_path}`;
-
-    if (type === "card") {
-      return data;
-    }
-    return { ...data, review: MOVIES[query] };
-  } catch (e) {
-    console.error(e);
-    throw new Error("Failed to fetch movie");
+export async function getMovie({ tmdbId }: MovieEntry): Promise<MovieCard> {
+  const res = await fetch(`${baseUrl}/${tmdbId}`, {
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(
+      `TMDB fetch for movie ${tmdbId} failed with code ${res.status}`,
+    );
   }
+
+  const movie = MovieSchema.parse(await res.json());
+  return {
+    title: movie.title,
+    poster_path: `${posterUrl}${movie.poster_path}`,
+    url: `https://www.themoviedb.org/movie/${tmdbId}`,
+  };
 }
