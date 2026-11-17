@@ -10,7 +10,7 @@ export const ogContentType = "image/png";
 
 // Hex equivalents of the `.dark` tokens in globals.css (Satori can't parse
 // oklch). `accent` is oklch(0.72 0.16 326): the theme's mauve hue, saturated.
-const colors = {
+export const colors = {
   background: "#0c090c",
   foreground: "#fafafa",
   mutedForeground: "#a89ea9",
@@ -38,7 +38,7 @@ const COLLAGE: Cover["shape"][][] = [
 const COLUMN_OFFSETS = [-40, -150, -70];
 
 // Satori needs ttf/otf/woff, not the woff2 that next/font serves.
-const loadFont = (weight: "Regular" | "Bold") =>
+export const loadFont = (weight: "Regular" | "Bold") =>
   readFile(join(process.cwd(), `app/fonts/JetBrainsMono-${weight}.ttf`));
 
 // Fetch up front and inline as data URIs, so one dead image drops a tile
