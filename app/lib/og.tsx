@@ -17,7 +17,6 @@ export const colors = {
   muted: "#2a212c",
   border: "rgba(255, 255, 255, 0.1)",
   accent: "#d77eda",
-  accentGlow: "rgba(215, 126, 218, 0.14)",
   transparent: "rgba(12, 9, 12, 0)",
 };
 
@@ -25,17 +24,25 @@ export const colors = {
 export type Cover = { url: string; shape: "poster" | "square" };
 
 const TILE_WIDTH = 168;
+const TILE_GAP = 18;
 const tileHeight = (shape: Cover["shape"]) =>
   shape === "poster" ? TILE_WIDTH * 1.5 : TILE_WIDTH;
 
-// Which shape goes where; staggered so posters and squares interleave.
+// Which shape goes where; staggered so posters and squares interleave. Four
+// tiles per column so the tilted columns overrun the card top and bottom.
 const COLLAGE: Cover["shape"][][] = [
-  ["poster", "square", "poster"],
-  ["square", "poster", "square"],
-  ["poster", "square", "square"],
+  ["poster", "square", "poster", "square"],
+  ["square", "poster", "square", "poster"],
+  ["poster", "square", "square", "poster"],
 ];
 // Vertical offset per column, for a masonry-like stagger.
-const COLUMN_OFFSETS = [-40, -150, -70];
+const COLUMN_OFFSETS = [0, -110, -40];
+
+/** How many covers of each shape the collage can hold. */
+export const COLLAGE_SLOTS = {
+  poster: COLLAGE.flat().filter((s) => s === "poster").length,
+  square: COLLAGE.flat().filter((s) => s === "square").length,
+};
 
 // Satori needs ttf/otf/woff, not the woff2 that next/font serves.
 export const loadFont = (weight: "Regular" | "Bold") =>
@@ -68,188 +75,150 @@ async function layoutCollage(covers: Cover[]) {
   ).filter((column) => column.length > 0);
 }
 
-export async function renderOgImage({
-  title,
-  description,
+/** Renders `node` as the OG PNG, with JetBrains Mono loaded. */
+export async function ogResponse(node: React.ReactElement) {
+  const [regular, bold] = await Promise.all([
+    loadFont("Regular"),
+    loadFont("Bold"),
+  ]);
+  return new ImageResponse(node, {
+    ...ogSize,
+    fonts: [
+      { name: "JetBrains Mono", data: regular, weight: 400, style: "normal" },
+      { name: "JetBrains Mono", data: bold, weight: 700, style: "normal" },
+    ],
+  });
+}
+
+/** "lorndev", the muted route path, then the accent block cursor. */
+export function wordmark({
+  path = "",
+  fontSize,
+  marginLeft = 0,
+}: {
+  path?: string;
+  fontSize: number;
+  marginLeft?: number;
+}) {
+  return (
+    <div
+      style={{ display: "flex", alignItems: "center", fontSize, marginLeft }}
+    >
+      <span style={{ fontWeight: 700 }}>lorndev</span>
+      {path && <span style={{ color: colors.mutedForeground }}>{path}</span>}
+      <div
+        style={{
+          width: "0.5em",
+          height: "0.9em",
+          marginLeft: "0.15em",
+          backgroundColor: colors.accent,
+        }}
+      />
+    </div>
+  );
+}
+
+// A fade from the background color toward `direction`.
+const fade = (direction: string, stop: string) => (
+  <div
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundImage: `linear-gradient(${direction}, ${colors.background} 0%, ${colors.transparent} ${stop})`,
+    }}
+  />
+);
+
+export async function renderCollageImage({
   path = "",
   covers = [],
 }: {
-  title: string;
-  description: string;
-  /** Route path, e.g. "/curation"; shown in the URL and the prompt. */
+  /** Route path, e.g. "/curation"; shown muted after the wordmark. */
   path?: string;
   covers?: Cover[];
 }) {
-  const [regular, bold, columns] = await Promise.all([
-    loadFont("Regular"),
-    loadFont("Bold"),
-    layoutCollage(covers),
-  ]);
+  const columns = await layoutCollage(covers);
   const hasCollage = columns.length > 0;
 
-  return new ImageResponse(
+  return ogResponse(
     <div
       style={{
         width: "100%",
         height: "100%",
         display: "flex",
-        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: hasCollage ? "flex-start" : "center",
+        position: "relative",
+        overflow: "hidden",
         backgroundColor: colors.background,
-        backgroundImage: `radial-gradient(circle at 0% 100%, ${colors.accentGlow}, ${colors.transparent} 55%)`,
         color: colors.foreground,
         fontFamily: "JetBrains Mono",
       }}
     >
-      {/* Mirrors the site header: logo left, bordered bottom. */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "36px 64px",
-          borderBottom: `2px solid ${colors.border}`,
-          fontSize: 32,
-        }}
-      >
-        <span style={{ fontWeight: 700 }}>lorndev</span>
-        <span style={{ color: colors.mutedForeground }}>lorndev.com{path}</span>
-      </div>
-
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {hasCollage && (
+      {hasCollage && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 560,
+            height: "100%",
+            display: "flex",
+          }}
+        >
           <div
             style={{
               position: "absolute",
-              top: 0,
-              right: 0,
-              width: 600,
-              height: "100%",
+              top: -90,
+              left: 70,
               display: "flex",
+              gap: TILE_GAP,
+              transform: "rotate(-8deg)",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                top: -60,
-                left: 70,
-                display: "flex",
-                gap: 18,
-                transform: "rotate(-8deg)",
-              }}
-            >
-              {columns.map((column, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 18,
-                    marginTop: COLUMN_OFFSETS[i],
-                  }}
-                >
-                  {column.map((cover) => (
-                    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-                    <img
-                      key={cover.url}
-                      src={cover.src!}
-                      width={TILE_WIDTH}
-                      height={tileHeight(cover.shape)}
-                      style={{
-                        objectFit: "cover",
-                        borderRadius: 8,
-                        border: `1px solid ${colors.border}`,
-                        backgroundColor: colors.muted,
-                      }}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-            {/* Fade the collage into the background toward the text. */}
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundImage: `linear-gradient(90deg, ${colors.background} 0%, ${colors.transparent} 45%)`,
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundImage: `linear-gradient(0deg, ${colors.background} 0%, ${colors.transparent} 22%)`,
-              }}
-            />
+            {columns.map((column, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: TILE_GAP,
+                  marginTop: COLUMN_OFFSETS[i],
+                }}
+              >
+                {column.map((cover) => (
+                  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+                  <img
+                    key={cover.url}
+                    src={cover.src!}
+                    width={TILE_WIDTH}
+                    height={tileHeight(cover.shape)}
+                    style={{
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      border: `1px solid ${colors.border}`,
+                      backgroundColor: colors.muted,
+                    }}
+                  />
+                ))}
+              </div>
+            ))}
           </div>
-        )}
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            padding: "0 64px",
-            gap: 20,
-            width: hasCollage ? 680 : "100%",
-          }}
-        >
-          {/* Shell prompt for the current route. */}
-          <div style={{ display: "flex", fontSize: 32 }}>
-            <span style={{ color: colors.accent }}>~{path}</span>
-            <span style={{ color: colors.mutedForeground }}>&nbsp;$</span>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              fontSize: 96,
-              fontWeight: 700,
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            <span>{title}</span>
-            {/* Block cursor. */}
-            <div
-              style={{
-                width: 46,
-                height: 84,
-                backgroundColor: colors.accent,
-              }}
-            />
-          </div>
-          <div
-            style={{
-              fontSize: 34,
-              lineHeight: 1.4,
-              color: colors.mutedForeground,
-            }}
-          >
-            {description}
-          </div>
+          {/* Fade the collage into the background on every open edge. */}
+          {fade("90deg", "45%")}
+          {fade("180deg", "18%")}
+          {fade("0deg", "18%")}
         </div>
-      </div>
+      )}
+
+      {wordmark({
+        path,
+        fontSize: hasCollage ? 48 : 72,
+        marginLeft: hasCollage ? 80 : 0,
+      })}
     </div>,
-    {
-      ...ogSize,
-      fonts: [
-        { name: "JetBrains Mono", data: regular, weight: 400, style: "normal" },
-        { name: "JetBrains Mono", data: bold, weight: 700, style: "normal" },
-      ],
-    },
   );
 }
