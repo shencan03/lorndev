@@ -6,9 +6,8 @@ import {
   renderCollageImage,
 } from "@/app/lib/og";
 import { MOVIES } from "@/app/lib/tmdb/catalogue/movie";
-import { TVs } from "@/app/lib/tmdb/catalogue/tv";
 import { getMovie } from "@/app/lib/tmdb/getMovie";
-import { getTV } from "@/app/lib/tmdb/getTV";
+import { getFavoriteSeries } from "@/app/lib/tmdb/getFavoriteSeries";
 import { LIKED_SONGS } from "@/app/lib/ytmusic/getSong";
 
 export const alt = "lorndev/curation — songs, movies and TV shows";
@@ -28,7 +27,7 @@ function sample<T>(items: T[], count: number): T[] {
 export default async function Image() {
   // One spare of each shape, in case an image fails to load.
   const posterResults = await Promise.allSettled([
-    ...sample(TVs, 1).map((q) => getTV(q).then((r) => r.poster_path)),
+    getFavoriteSeries().then((tvs) => sample(tvs, 1)[0].poster_path),
     ...sample(MOVIES, COLLAGE_SLOTS.poster).map((m) =>
       getMovie(m).then((r) => r.poster_path),
     ),

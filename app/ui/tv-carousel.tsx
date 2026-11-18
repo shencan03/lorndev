@@ -1,10 +1,9 @@
 import ShuffledCarousel from "@/app/ui/shuffled-carousel";
-import { TVs } from "@/app/lib/tmdb/catalogue/tv";
 import TVCard from "@/app/ui/tv-card";
-import { getTV } from "@/app/lib/tmdb/getTV";
+import { getFavoriteSeries } from "@/app/lib/tmdb/getFavoriteSeries";
 
 export default async function TVCarousel() {
-  const tvs = await Promise.all(TVs.map((query) => getTV(query)));
+  const tvs = await getFavoriteSeries();
 
   return (
     <ShuffledCarousel

@@ -6,6 +6,7 @@ export default function SongCarousel() {
   return (
     <ShuffledCarousel
       id="songs"
+      max={24}
       placeholderClassName="aspect-square"
       items={LIKED_SONGS.map((song) => ({
         key: song.videoId,

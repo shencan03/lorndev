@@ -34,16 +34,17 @@ const subscribe = () => () => {};
 export default function ShuffledCarousel({
   id,
   items,
-  max = 24,
+  max,
   placeholderClassName,
 }: {
   id: string;
   items: ShuffledItem[];
+  // Show at most this many; omit to show every item.
   max?: number;
   // Same size as the card, so nothing shifts when the items appear.
   placeholderClassName: string;
 }) {
-  const shown = Math.min(max, items.length);
+  const shown = Math.min(max ?? items.length, items.length);
   const picked = useSyncExternalStore(
     subscribe,
     () => {
