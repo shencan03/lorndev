@@ -8,7 +8,7 @@ name: Docker
 on:
   push:
     branches: ["main"]
-  # Started by sync-songs.yml after it commits new liked songs.
+  # Started by sync-songs.yml / sync-games.yml after they commit a changed list.
   workflow_dispatch:
 
 env:
@@ -75,8 +75,11 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          secrets: "tmdb_token=${{ secrets.TMDB_TOKEN }}"
-          # Refetch the TMDB favorite series list on every deploy.
+          secrets: |
+            tmdb_token=${{ secrets.TMDB_TOKEN }}
+            igdb_client_id=${{ secrets.IGDB_CLIENT_ID }}
+            igdb_client_secret=${{ secrets.IGDB_CLIENT_SECRET }}
+          # Refetch the TMDB favorite series list and IGDB game details on every deploy.
           build-args: CACHE_BUST=${{ github.run_id }}-${{ github.run_attempt }}
 
       # Sign the resulting Docker image digest except on PRs.

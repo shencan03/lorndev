@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "image.tmdb.org",
       },
       {
+        protocol: "https",
+        hostname: "images.igdb.com",
+        pathname: "/igdb/image/upload/**",
+      },
+      {
         // YouTube Music cover art (yt3./lh3.googleusercontent.com)
         protocol: "https",
         hostname: "*.googleusercontent.com",

@@ -16,3 +16,9 @@ export type SongCard = {
   thumbnail: string;
   videoId: string;
 };
+
+export type GameCard = {
+  name: string;
+  cover: string;
+  url: string;
+};

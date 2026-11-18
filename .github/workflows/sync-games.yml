@@ -1,0 +1,55 @@
+name: Sync favorite games
+
+# Copies games.txt from the Gist below into app/lib/igdb/catalogue/games.txt and, if it
+# changed, commits it and starts the Docker workflow, which looks the games up on IGDB.
+# Edit the Gist (one IGDB slug or https://www.igdb.com/games/<slug> URL per line, `#` for
+# comments) and the site follows within a day, or run this workflow by hand.
+
+on:
+  schedule:
+    - cron: "37 4 * * *" # daily, 04:37 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: sync-games
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the updated games.txt
+  actions: write # start the Docker workflow
+
+env:
+  GIST_ID: cf4dc854ece98e4abba86a567c217025
+  CATALOGUE: app/lib/igdb/catalogue/games.txt
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # Read through the API rather than the raw URL, whose CDN can serve a stale copy.
+      - name: Fetch games list
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "gists/$GIST_ID" --jq '.files["games.txt"].content // error("games.txt missing from gist")' > "$CATALOGUE"
+
+      - name: Commit and redeploy if changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- "$CATALOGUE"; then
+            echo "Games list unchanged; nothing to deploy."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$CATALOGUE"
+          git commit -m "chore(curation): sync favorite games"
+          git push origin HEAD:main
+          # Pushes made with GITHUB_TOKEN don't trigger `on: push`, but a dispatch does.
+          gh workflow run docker-publish.yml --ref main

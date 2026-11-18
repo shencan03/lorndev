@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import CurationPage from "@/content/curation-page.mdx";
 
-const description = "Songs, movies and TV shows I'd like to share";
+const description = "Songs, movies, TV shows and games I'd like to share";
 
 export const metadata: Metadata = {
   title: "curation",

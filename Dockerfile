@@ -22,12 +22,14 @@ COPY . .
 
 ENV NODE_ENV=production
 
-# Changes on every CI run so the build layer (and its TMDB fetches) is never reused from cache.
+# Changes on every CI run so the build layer (and its TMDB/IGDB fetches) is never reused from cache.
 ARG CACHE_BUST
 RUN echo "build ${CACHE_BUST}"
 
 # Pass .env required in build but excluded from image
 RUN --mount=type=secret,id=tmdb_token,env=TMDB_TOKEN \
+  --mount=type=secret,id=igdb_client_id,env=IGDB_CLIENT_ID \
+  --mount=type=secret,id=igdb_client_secret,env=IGDB_CLIENT_SECRET \
   corepack enable pnpm && pnpm build; 
 FROM dhi.io/node:${NODE_VERSION} AS runner
 
