@@ -1,0 +1,52 @@
+/* The home MDX: one <section> per column. */
+.essay {
+  display: grid;
+  gap: 2rem 3.5rem;
+  padding-block: 0.5rem 4rem;
+}
+@media (width >= 48rem) {
+  .essay {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.essay h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  font-variation-settings: "wdth" 75;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.essay h3 {
+  margin: 0 0 8px;
+  font-size: inherit;
+  font-weight: 500;
+}
+.essay p,
+.essay ol {
+  max-width: 56ch;
+  margin: 0;
+  color: color-mix(in oklch, var(--foreground) 80%, var(--background));
+}
+.essay ol {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  list-style: decimal;
+}
+.essay ul {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  list-style: circle;
+  color: var(--muted-foreground);
+}
+.essay li::marker {
+  color: var(--muted-foreground);
+}
+.essay a {
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--mauve);
+  text-underline-offset: 3px;
+}

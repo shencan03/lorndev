@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { TVCard } from "@/app/lib/definitions";
+import { yearOf } from "@/app/lib/tmdb/getMovie";
 
 // The TV carousel mirrors this TMDB list on the token owner's account. It is fetched while
 // the site builds, so every deploy picks up whatever the list holds at that moment.
@@ -21,6 +22,7 @@ const ListPageSchema = z.object({
       media_type: z.string(),
       name: z.string().optional(),
       poster_path: z.string().nullable().optional(),
+      first_air_date: z.string().optional(),
     }),
   ),
 });
@@ -84,6 +86,7 @@ async function fetchFavoriteSeries(): Promise<TVCard[]> {
         name: item.name,
         poster_path: `${posterUrl}${item.poster_path}`,
         url: `https://www.themoviedb.org/tv/${item.id}`,
+        year: yearOf(item.first_air_date),
       });
     }
   }

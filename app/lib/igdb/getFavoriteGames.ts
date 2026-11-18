@@ -21,6 +21,8 @@ const GamesSchema = z.array(
     slug: z.string(),
     url: z.string(),
     cover: z.object({ image_id: z.string() }).optional(),
+    // Unix seconds.
+    first_release_date: z.number().optional(),
   }),
 );
 
@@ -71,7 +73,7 @@ async function fetchFavoriteGames(): Promise<GameCard[]> {
       "Client-ID": clientId,
       Authorization: `Bearer ${await accessToken(clientId)}`,
     },
-    body: `fields name,slug,url,cover.image_id; where slug = (${slugs
+    body: `fields name,slug,url,cover.image_id,first_release_date; where slug = (${slugs
       .map((slug) => JSON.stringify(slug))
       .join(",")}); limit 500;`,
   });
@@ -94,6 +96,9 @@ async function fetchFavoriteGames(): Promise<GameCard[]> {
             name: game.name,
             cover: `${coverUrl}/${game.cover.image_id}.jpg`,
             url: game.url,
+            year: game.first_release_date
+              ? new Date(game.first_release_date * 1000).getUTCFullYear()
+              : undefined,
           },
         ]
       : [],

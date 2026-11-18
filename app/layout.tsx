@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, JetBrains_Mono } from "next/font/google";
 import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 import Header from "@/app/ui/header";
@@ -9,6 +9,14 @@ import { SITE_URL } from "@/app/lib/site";
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+});
+
+// Display face for the wordmark and headings: condensed via wdth, and opsz
+// tightens it at large sizes.
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-bricolage",
+  axes: ["wdth", "opsz"],
 });
 
 export const metadata: Metadata = {
@@ -41,13 +49,12 @@ export default function RootLayout({
       className={cn(
         "h-full antialiased font-mono dark",
         jetbrainsMono.variable,
+        bricolage.variable,
       )}
     >
-      <body className="min-h-full flex flex-col sm:mx-128 justify-between gap-4">
+      <body className="min-h-full flex flex-col text-[13px] leading-relaxed">
         <Header />
-        <main className="basis-4xl px-4 prose prose-sm sm:prose">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

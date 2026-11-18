@@ -1,4 +1,4 @@
-// Social profiles shown on the home OG image (mirrors app/ui/socials.tsx).
+// Social profiles, shown in the footer and on the home OG image.
 // `iconPath` is the regular-weight Phosphor logo (MIT, 256x256 viewBox),
 // inlined because Satori can't render Phosphor's forwardRef components.
 

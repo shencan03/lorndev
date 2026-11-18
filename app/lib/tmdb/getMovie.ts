@@ -5,9 +5,16 @@ import type { MovieEntry } from "@/app/lib/tmdb/catalogue/movie";
 const baseUrl = "https://api.themoviedb.org/3/movie";
 const posterUrl = "https://image.tmdb.org/t/p/w342";
 
+// TMDB dates are "YYYY-MM-DD", or empty when unknown.
+export function yearOf(date: string | undefined): number | undefined {
+  const year = Number(date?.slice(0, 4));
+  return year > 0 ? year : undefined;
+}
+
 const MovieSchema = z.object({
   title: z.string(),
   poster_path: z.string(),
+  release_date: z.string().optional(),
 });
 
 export async function getMovie({ tmdbId }: MovieEntry): Promise<MovieCard> {
@@ -28,5 +35,6 @@ export async function getMovie({ tmdbId }: MovieEntry): Promise<MovieCard> {
     title: movie.title,
     poster_path: `${posterUrl}${movie.poster_path}`,
     url: `https://www.themoviedb.org/movie/${tmdbId}`,
+    year: yearOf(movie.release_date),
   };
 }

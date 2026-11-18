@@ -1,0 +1,168 @@
+/* The page is lit by the centred cover: --glow-r/g/b are registered in globals.css
+   so the color eases between covers instead of jumping. */
+.room {
+  position: relative;
+  overflow: hidden;
+  padding-block: 1.5rem 3rem;
+  transition:
+    --glow-r 0.6s ease,
+    --glow-g 0.6s ease,
+    --glow-b 0.6s ease;
+}
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 46% at 50% 52%,
+    rgb(var(--glow-r) var(--glow-g) var(--glow-b) / 0.3),
+    transparent 70%
+  );
+}
+
+/* The kind picker doubles as the page heading. */
+.kinds {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 clamp(14px, 3vw, 32px);
+}
+.kind {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-size: clamp(40px, 7vw, 84px);
+  line-height: 0.95;
+  color: color-mix(in oklch, var(--foreground) 24%, var(--background));
+  transition: color 0.25s;
+}
+.kind:hover {
+  color: var(--muted-foreground);
+}
+.kind[aria-selected="true"] {
+  color: var(--foreground);
+}
+
+/* Full-bleed strip; covers run off both edges and fade out there, which is what
+   tells people it scrolls. */
+.reel {
+  --w: 200px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-block: 36px 20px;
+  padding-inline: calc(50% - var(--w) * 0.4);
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 14%,
+    #000 86%,
+    transparent
+  );
+  cursor: grab;
+}
+.reel::-webkit-scrollbar {
+  display: none;
+}
+.square {
+  --w: 220px;
+}
+.dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+@media (max-width: 640px) {
+  .reel {
+    --w: 150px;
+  }
+  .square {
+    --w: 170px;
+  }
+}
+
+/* --t is 1 for the centred cover and falls to 0 one slot away. */
+.slot {
+  --t: 0;
+  flex: 0 0 calc(var(--w) * 0.8);
+  display: grid;
+  place-items: center;
+  scroll-snap-align: center;
+}
+.cover {
+  position: relative;
+  display: block;
+  flex: none;
+  width: var(--w);
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--muted);
+  transform: scale(calc(0.68 + 0.32 * var(--t)));
+  filter: grayscale(calc(1 - var(--t))) brightness(calc(0.45 + 0.55 * var(--t)));
+  box-shadow: 0 30px 60px -20px
+    rgb(var(--glow-r) var(--glow-g) var(--glow-b) / calc(var(--t) * 0.55));
+  -webkit-user-drag: none;
+}
+.square .cover {
+  aspect-ratio: 1;
+}
+.cover img {
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* One nudge on the first visit, to show the row moves. */
+.hint .slot {
+  animation: nudge 1.2s cubic-bezier(0.5, 0, 0.3, 1) 0.6s 1;
+}
+@keyframes nudge {
+  45% {
+    transform: translateX(-56px);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.caption {
+  position: relative;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+.title {
+  display: flex;
+  align-items: end;
+  min-height: 1.8em;
+  margin: 0;
+  font-size: clamp(32px, 5vw, 56px);
+}
+.title span {
+  animation: rise 0.35s ease both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.meta {
+  min-height: 1.65em;
+  margin: 8px 0 0;
+  color: var(--muted-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room {
+    transition: none;
+  }
+  .hint .slot,
+  .title span {
+    animation: none;
+  }
+}
