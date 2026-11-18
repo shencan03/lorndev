@@ -32,11 +32,13 @@ jobs:
           ref: main
 
       # Read through the API rather than the raw URL, whose CDN can serve a stale copy.
+      # Unauthenticated on purpose: GITHUB_TOKEN is scoped to this repo and gets a 403
+      # from the Gists API, while a secret gist is readable by anyone with its ID.
       - name: Fetch games list
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api "gists/$GIST_ID" --jq '.files["games.txt"].content // error("games.txt missing from gist")' > "$CATALOGUE"
+          set -o pipefail
+          curl -fsSL --retry 3 -H "Accept: application/vnd.github+json" "https://api.github.com/gists/$GIST_ID" \
+            | jq -er '.files["games.txt"].content // error("games.txt missing from gist")' > "$CATALOGUE"
 
       - name: Commit and redeploy if changed
         env:
