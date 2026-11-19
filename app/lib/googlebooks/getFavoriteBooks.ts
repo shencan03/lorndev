@@ -4,9 +4,11 @@ import { z } from "zod";
 import type { BookCard } from "@/app/lib/definitions";
 
 // The books carousel mirrors catalogue/books.txt, which sync-books.yml copies from a Gist.
-// Each line is an ISBN (hyphens allowed) or a Google Books link; blank lines and `#`
-// comments are ignored. Titles and authors come from Google Books while the site builds, so
-// they match the edition listed (usually a Turkish translation); see below for covers.
+// Each line is an ISBN (hyphens allowed) or a Google Books link, optionally followed by
+// `| title` and `| author` to override what Google Books has (e.g. a missing "ç"); blank
+// lines and `#` comments are ignored. Titles and authors come from Google Books while the
+// site builds, so they match the edition listed (usually a Turkish translation); see below
+// for covers.
 const catalogue = path.join(
   process.cwd(),
   "app/lib/googlebooks/catalogue/books.txt",
@@ -15,7 +17,8 @@ const catalogue = path.join(
 const apiUrl = "https://www.googleapis.com/books/v1/volumes";
 const openLibraryCoverUrl = "https://covers.openlibrary.org/b/isbn";
 
-type Entry = { isbn: string } | { volumeId: string };
+type Edition = { isbn: string } | { volumeId: string };
+type Entry = { edition: Edition; title?: string; author?: string };
 
 const ImageLinksSchema = z.object({
   smallThumbnail: z.string().optional(),
@@ -52,24 +55,35 @@ function apiKey(): string {
   return value;
 }
 
-function parseLine(line: string): Entry {
+const tidy = (text: string) => text.replace(/\s+/g, " ").trim();
+
+function parseEdition(ref: string): Edition {
   // books.google.com/books?id=<id> and google.com/books/edition/<title>/<id>
   const link =
-    line.match(/[?&]id=([\w-]+)/) ??
-    line.match(/\/books\/edition\/[^/]*\/([\w-]+)/);
+    ref.match(/[?&]id=([\w-]+)/) ??
+    ref.match(/\/books\/edition\/[^/]*\/([\w-]+)/);
   if (link) return { volumeId: link[1] };
-  const isbn = line.replace(/[\s-]/g, "").toUpperCase();
+  const isbn = ref.replace(/[\s-]/g, "").toUpperCase();
   if (/^(\d{9}[\dX]|\d{13})$/.test(isbn)) return { isbn };
-  throw new Error(`books.txt: not an ISBN or Google Books link: ${line}`);
+  throw new Error(`books.txt: not an ISBN or Google Books link: ${ref}`);
+}
+
+function parseLine(line: string): Entry {
+  const [ref, title, author] = line.split("|").map(tidy);
+  return {
+    edition: parseEdition(ref),
+    title: title || undefined,
+    author: author || undefined,
+  };
 }
 
 async function readEntries(): Promise<Entry[]> {
   const text = await readFile(catalogue, "utf8");
-  const lines = text
+  return text
     .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"));
-  return [...new Set(lines)].map(parseLine);
+    .filter((line) => line && !line.startsWith("#"))
+    .map(parseLine);
 }
 
 // The key rides in the query string, so errors name the lookup rather than the URL.
@@ -90,16 +104,17 @@ async function googleBooks(
   }
 }
 
-async function findVolumeId(entry: Entry): Promise<string> {
-  if ("volumeId" in entry) return entry.volumeId;
+async function findVolumeId(edition: Edition): Promise<string> {
+  if ("volumeId" in edition) return edition.volumeId;
+  const { isbn } = edition;
   const search = SearchSchema.parse(
-    await googleBooks(`?q=isbn:${entry.isbn}`, `search for ISBN ${entry.isbn}`),
+    await googleBooks(`?q=isbn:${isbn}`, `search for ISBN ${isbn}`),
   );
   const volume = search.items?.[0];
   // Fail the build on a typo rather than silently dropping a book.
   if (!volume) {
     throw new Error(
-      `No Google Books edition for ISBN ${entry.isbn}; use its Google Books link instead`,
+      `No Google Books edition for ISBN ${isbn}; use its Google Books link instead`,
     );
   }
   return volume.id;
@@ -115,19 +130,43 @@ async function openLibraryCover(isbn: string): Promise<string | undefined> {
 }
 
 // The volume lists larger sizes than search results do, when the publisher supplied them.
+// Medium (~575px wide) is sharp at the reel's 220px on retina screens; extraLarge is ~1700px
+// and several hundred KB, so it's the last resort before the 128px thumbnail.
 function googleCover(volume: Volume): string | undefined {
   const links = volume.volumeInfo.imageLinks;
   const url =
-    links?.extraLarge ??
-    links?.large ??
     links?.medium ??
+    links?.large ??
     links?.small ??
+    links?.extraLarge ??
     links?.thumbnail;
   return url?.replace(/^http:/, "https:").replace(/&edge=curl/, "");
 }
 
-async function lookUp(entry: Entry): Promise<BookCard | null> {
-  const id = await findVolumeId(entry);
+// Compares names loosely: "Zweig" matches "zweıg", "Dostoyevski" matches "Dostoyevskı".
+const loose = (text: string) =>
+  text
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLocaleLowerCase("tr")
+    .replace(/ı/g, "i");
+
+// Some publishers append the author: "Bir Kadının Yirmi Dört Saati - Stefan Zweig".
+function cleanTitle(title: string, authors: string[]): string {
+  const match = tidy(title).match(/^(.+?)\s+[-–—]\s+([^-–—]+)$/);
+  if (!match) return tidy(title);
+  const [, rest, tail] = match;
+  return authors.some((author) => loose(author) === loose(tail))
+    ? rest
+    : tidy(title);
+}
+
+async function lookUp({
+  edition,
+  title,
+  author,
+}: Entry): Promise<BookCard | null> {
+  const id = await findVolumeId(edition);
   const volume = VolumeSchema.parse(
     await googleBooks(`/${encodeURIComponent(id)}`, `volume ${id}`),
   );
@@ -135,8 +174,8 @@ async function lookUp(entry: Entry): Promise<BookCard | null> {
 
   // A line given as a link still has an ISBN on its volume, usually.
   const isbn =
-    "isbn" in entry
-      ? entry.isbn
+    "isbn" in edition
+      ? edition.isbn
       : (
           info.industryIdentifiers?.find((id) => id.type === "ISBN_13") ??
           info.industryIdentifiers?.find((id) => id.type === "ISBN_10")
@@ -148,9 +187,10 @@ async function lookUp(entry: Entry): Promise<BookCard | null> {
     return null;
   }
 
+  const authors = (info.authors ?? []).map(tidy).filter(Boolean);
   return {
-    title: info.title,
-    authors: (info.authors ?? []).slice(0, 2).join(" & "),
+    title: title ?? cleanTitle(info.title, authors),
+    authors: author ?? authors.slice(0, 2).join(" & "),
     cover,
     url: info.canonicalVolumeLink ?? `https://books.google.com/books?id=${id}`,
   };
