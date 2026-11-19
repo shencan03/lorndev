@@ -4,9 +4,11 @@ import { MOVIES } from "@/app/lib/tmdb/catalogue/movie";
 import { getMovie } from "@/app/lib/tmdb/getMovie";
 import { getFavoriteSeries } from "@/app/lib/tmdb/getFavoriteSeries";
 import { getFavoriteGames } from "@/app/lib/igdb/getFavoriteGames";
+import { getFavoriteBooks } from "@/app/lib/googlebooks/getFavoriteBooks";
 import { LIKED_SONGS, youtubeMusicUrl } from "@/app/lib/ytmusic/getSong";
 
-const description = "Songs, movies, TV shows and games I'd like to share";
+const description =
+  "Songs, movies, TV shows, games and books I'd like to share";
 
 export const metadata: Metadata = {
   title: "curation",
@@ -27,10 +29,11 @@ const withYear = (noun: string, year?: number) =>
   year ? `${noun}, ${year}` : noun;
 
 export default async function Curation() {
-  const [series, movies, games] = await Promise.all([
+  const [series, movies, games, books] = await Promise.all([
     getFavoriteSeries(),
     Promise.all(MOVIES.map(getMovie)),
     getFavoriteGames(),
+    getFavoriteBooks(),
   ]);
 
   const shelves: Shelf[] = [
@@ -65,6 +68,17 @@ export default async function Curation() {
         meta: withYear("Game", game.year),
         href: game.url,
         image: game.cover,
+      })),
+    },
+    {
+      id: "books",
+      label: "Books",
+      items: books.map((book) => ({
+        key: book.url,
+        title: book.title,
+        meta: book.authors ? `Book by ${book.authors}` : "Book",
+        href: book.url,
+        image: book.cover,
       })),
     },
     {

@@ -1,0 +1,56 @@
+name: Sync favorite books
+
+# Copies books.txt from the Gist below into app/lib/googlebooks/catalogue/books.txt and, if it
+# changed, commits it and starts the Docker workflow, which looks the books up on Google Books.
+# Edit the Gist (one ISBN or Google Books link per line, `#` for comments) and the site follows within a day, or run this workflow by hand.
+
+on:
+  schedule:
+    - cron: "47 4 * * *" # daily, 04:47 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: sync-books
+  cancel-in-progress: false
+
+permissions:
+  contents: write # push the updated books.txt
+  actions: write # start the Docker workflow
+
+env:
+  GIST_ID: e80341988c4de5edf7475f7ffb230a6c
+  CATALOGUE: app/lib/googlebooks/catalogue/books.txt
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      # Read through the API rather than the raw URL, whose CDN can serve a stale copy.
+      # Unauthenticated on purpose: GITHUB_TOKEN is scoped to this repo and gets a 403
+      # from the Gists API, while a secret gist is readable by anyone with its ID.
+      - name: Fetch books list
+        run: |
+          set -o pipefail
+          curl -fsSL --retry 3 -H "Accept: application/vnd.github+json" "https://api.github.com/gists/$GIST_ID" \
+            | jq -er '.files["books.txt"].content // error("books.txt missing from gist")' > "$CATALOGUE"
+
+      - name: Commit and redeploy if changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- "$CATALOGUE"; then
+            echo "Books list unchanged; nothing to deploy."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$CATALOGUE"
+          git commit -m "chore(curation): sync favorite books"
+          git push origin HEAD:main
+          # Pushes made with GITHUB_TOKEN don't trigger `on: push`, but a dispatch does.
+          gh workflow run docker-publish.yml --ref main

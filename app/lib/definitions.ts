@@ -25,3 +25,10 @@ export type GameCard = {
   url: string;
   year?: number;
 };
+
+export type BookCard = {
+  title: string;
+  authors: string;
+  cover: string;
+  url: string;
+};

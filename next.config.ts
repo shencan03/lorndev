@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
         pathname: "/igdb/image/upload/**",
       },
       {
+        // Google Books covers, when Open Library has none (books/content and
+        // books/publisher/content)
+        protocol: "https",
+        hostname: "books.google.com",
+        pathname: "/books/**",
+      },
+      {
+        // Book covers by ISBN (they redirect to archive.org, which the
+        // image optimizer follows)
+        protocol: "https",
+        hostname: "covers.openlibrary.org",
+        pathname: "/b/isbn/**",
+      },
+      {
         // YouTube Music cover art (yt3./lh3.googleusercontent.com)
         protocol: "https",
         hostname: "*.googleusercontent.com",
