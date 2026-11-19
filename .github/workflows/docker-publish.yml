@@ -8,7 +8,7 @@ name: Docker
 on:
   push:
     branches: ["main"]
-  # Started by sync-songs.yml / sync-games.yml after they commit a changed list.
+  # Started by sync-songs.yml / sync-games.yml / sync-books.yml after they commit a changed list.
   workflow_dispatch:
 
 env:
@@ -79,7 +79,9 @@ jobs:
             tmdb_token=${{ secrets.TMDB_TOKEN }}
             igdb_client_id=${{ secrets.IGDB_CLIENT_ID }}
             igdb_client_secret=${{ secrets.IGDB_CLIENT_SECRET }}
-          # Refetch the TMDB favorite series list and IGDB game details on every deploy.
+            google_books_api_key=${{ secrets.GOOGLE_BOOKS_API_KEY }}
+          # Refetch the TMDB favorite series list, IGDB game details and Google Books
+          # details on every deploy.
           build-args: CACHE_BUST=${{ github.run_id }}-${{ github.run_attempt }}
 
       # Sign the resulting Docker image digest except on PRs.
