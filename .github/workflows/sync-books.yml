@@ -2,7 +2,9 @@ name: Sync favorite books
 
 # Copies books.txt from the Gist below into app/lib/googlebooks/catalogue/books.txt and, if it
 # changed, commits it and starts the Docker workflow, which looks the books up on Google Books.
-# Edit the Gist (one ISBN or Google Books link per line, `#` for comments) and the site follows within a day, or run this workflow by hand.
+# Edit the Gist (one ISBN or Google Books link per line, optionally followed by `| title`
+# and `| author` overrides; `#` for comments) and the site follows within a day, or run
+# this workflow by hand.
 
 on:
   schedule:
