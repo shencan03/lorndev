@@ -52,22 +52,17 @@ function Band({
   href,
   word,
   sub,
-  cursor,
   art,
 }: {
   href: string;
   word: string;
   sub: string;
-  cursor?: boolean;
   art: ReactNode;
 }) {
   return (
     <Link href={href} prefetch={false} className={styles.band}>
       <div className={styles.label}>
-        <h2 className={cn("type-display", styles.word)}>
-          {word}
-          {cursor && <span className={styles.cursor} aria-hidden />}
-        </h2>
+        <h2 className={cn("type-display", styles.word)}>{word}</h2>
         <span className={styles.sub}>{sub}</span>
       </div>
       <div className={styles.art} aria-hidden>
@@ -88,7 +83,6 @@ export default async function HomeStack({ essay }: { essay: ReactNode }) {
         href="/curation"
         word="curation"
         sub="songs, films, shows, books, games"
-        cursor
         art={
           <span className={styles.fan}>
             {covers.map((c, i) => (
