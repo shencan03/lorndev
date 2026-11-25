@@ -12,6 +12,7 @@ import {
 } from "react";
 import { cn } from "@/lib/utils";
 import { shuffled } from "@/app/lib/shuffle";
+import { unpackSong, type PackedSong } from "@/app/lib/ytmusic/songArt";
 import styles from "@/app/ui/curation-reel.module.css";
 
 export type CurationItem = {
@@ -30,8 +31,14 @@ export type Shelf = {
   square?: boolean;
   /** Show at most this many per visit; omit to show all. */
   max?: number;
-  items: CurationItem[];
-};
+} & ({ items: CurationItem[] } | { songs: PackedSong[] });
+
+const pickFrom = (shelf: Shelf): CurationItem[] =>
+  "songs" in shelf
+    ? shuffled(shelf.songs)
+        .slice(0, shelf.max ?? shelf.songs.length)
+        .map(unpackSong)
+    : shuffled(shelf.items).slice(0, shelf.max ?? shelf.items.length);
 
 // Covers sit this many slots in on load, so there's something on both sides.
 const START = 2;
@@ -114,10 +121,7 @@ export default function CurationReel({
     subscribe,
     () =>
       (picks ??= Object.fromEntries(
-        shelves.map((shelf) => [
-          shelf.id,
-          shuffled(shelf.items).slice(0, shelf.max ?? shelf.items.length),
-        ]),
+        shelves.map((shelf) => [shelf.id, pickFrom(shelf)]),
       )),
     () => null,
   );

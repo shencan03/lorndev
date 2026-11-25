@@ -10,6 +10,7 @@ import { getFavoriteSeries } from "@/app/lib/tmdb/getFavoriteSeries";
 import { getFavoriteGames } from "@/app/lib/igdb/getFavoriteGames";
 import { getFavoriteBooks } from "@/app/lib/googlebooks/getFavoriteBooks";
 import { LIKED_SONGS } from "@/app/lib/ytmusic/getSong";
+import { songArt } from "@/app/lib/ytmusic/songArt";
 import HomeWhy from "@/app/ui/home-why";
 import styles from "@/app/ui/home-stack.module.css";
 
@@ -28,7 +29,7 @@ async function coverFan(): Promise<Cover[]> {
   ]);
   const song = pick(LIKED_SONGS);
   const covers: (Cover | undefined)[] = [
-    song && { src: song.thumbnail, square: true },
+    song && { src: songArt(song.thumbnail, 240), square: true },
     games.status === "fulfilled" ? cover(pick(games.value)?.cover) : undefined,
     series.status === "fulfilled"
       ? cover(pick(series.value)?.poster_path)
