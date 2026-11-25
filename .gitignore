@@ -43,3 +43,6 @@ next-env.d.ts
 # YouTube Music browser auth (Google session cookie)
 browser.json
 scripts/node_modules/
+
+# Brainstorm mockups
+.superpowers/

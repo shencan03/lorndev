@@ -46,6 +46,9 @@ const nextConfig: NextConfig = {
     ],
   },
   output: "standalone",
+  // Dev only: hosts allowed to load the dev server's scripts, e.g. a phone on
+  // the same network: DEV_ORIGINS=10.0.0.5 pnpm dev -H 0.0.0.0
+  allowedDevOrigins: process.env.DEV_ORIGINS?.split(","),
   // Serve one host only; canonical tags cover crawlers that skip redirects.
   async redirects() {
     return [
