@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 import { common } from "lowlight";
 import dockerfile from "highlight.js/lib/languages/dockerfile";
 
@@ -61,6 +62,8 @@ const nextConfig: NextConfig = {
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
   options: {
+    // GFM for footnotes ([^1]), plus tables, strikethrough and autolinks.
+    remarkPlugins: [remarkGfm],
     rehypePlugins: [
       [rehypeHighlight, { languages: { ...common, dockerfile } }],
     ],
