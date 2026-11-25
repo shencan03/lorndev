@@ -5,7 +5,8 @@ import { getMovie } from "@/app/lib/tmdb/getMovie";
 import { getFavoriteSeries } from "@/app/lib/tmdb/getFavoriteSeries";
 import { getFavoriteGames } from "@/app/lib/igdb/getFavoriteGames";
 import { getFavoriteBooks } from "@/app/lib/googlebooks/getFavoriteBooks";
-import { LIKED_SONGS, youtubeMusicUrl } from "@/app/lib/ytmusic/getSong";
+import { LIKED_SONGS } from "@/app/lib/ytmusic/getSong";
+import { packSong } from "@/app/lib/ytmusic/songArt";
 
 const description =
   "Songs, movies, TV shows, games and books I'd like to share";
@@ -86,13 +87,7 @@ export default async function Curation() {
       label: "Songs",
       square: true,
       max: 24,
-      items: LIKED_SONGS.map((song) => ({
-        key: song.videoId,
-        title: song.title,
-        meta: `Song by ${song.artists}`,
-        href: youtubeMusicUrl(song.videoId),
-        image: song.thumbnail,
-      })),
+      songs: LIKED_SONGS.map(packSong),
     },
   ];
 

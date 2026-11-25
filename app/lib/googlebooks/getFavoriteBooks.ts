@@ -123,10 +123,34 @@ async function findVolumeId(edition: Edition): Promise<string> {
 // Covers come from Open Library by ISBN when it has one: Google Books usually holds only a
 // 128px thumbnail for Turkish editions (its larger zooms are an "image not available"
 // placeholder), while Open Library has the same edition's cover at ~500px.
+//
+// Open Library redirects twice to archive.org, which unzips the cover per request: 3-4s
+// each. So the build downloads them once and app/covers/books/[isbn] serves them from
+// this site. A failed download falls back to the Google cover.
+const openLibraryCovers = new Map<string, ArrayBuffer>();
+
 async function openLibraryCover(isbn: string): Promise<string | undefined> {
-  const url = `${openLibraryCoverUrl}/${isbn}-L.jpg`;
-  const res = await fetch(`${url}?default=false`, { method: "HEAD" });
-  return res.ok ? url : undefined;
+  try {
+    const res = await fetch(
+      `${openLibraryCoverUrl}/${isbn}-L.jpg?default=false`,
+    );
+    if (!res.ok || !res.headers.get("content-type")?.startsWith("image/")) {
+      return undefined;
+    }
+    openLibraryCovers.set(isbn, await res.arrayBuffer());
+    return `/covers/books/${isbn}`;
+  } catch (error) {
+    console.warn(`Open Library cover for ${isbn} failed: ${error}`);
+    return undefined;
+  }
+}
+
+/** The downloaded Open Library covers, by ISBN, for app/covers/books/[isbn]. */
+export async function getOpenLibraryCovers(): Promise<
+  ReadonlyMap<string, ArrayBuffer>
+> {
+  await getFavoriteBooks();
+  return openLibraryCovers;
 }
 
 // The volume lists larger sizes than search results do, when the publisher supplied them.
