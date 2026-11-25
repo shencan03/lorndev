@@ -139,37 +139,7 @@
   width: 64%;
 }
 
-/* Why: a question mark; the band's button opens the essay below it. */
-.why {
-  text-align: left;
-}
-/* Let the button's overlay reach the band's edges, not just the label's. */
-.why .label {
-  position: static;
-}
-.whyButton {
-  font: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.whyButton::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-}
-.whyButton:focus-visible {
-  outline: none;
-}
-.whyButton:focus-visible::after {
-  outline: 2px solid var(--mauve);
-  outline-offset: -2px;
-}
-.why:has(.whyButton:active) {
-  background: color-mix(in oklch, var(--background) 82%, var(--muted));
-}
+/* Why: a question mark; tapping it scrolls to the essay below. */
 .qmark {
   display: grid;
   width: 150px;
@@ -182,28 +152,12 @@
   line-height: 0.8;
   color: var(--mauve);
   transform: rotate(9deg);
-  transition:
-    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
-    opacity 0.35s;
-}
-.why:has([aria-expanded="true"]) .qmark {
-  opacity: 0.5;
-  transform: rotate(9deg) scale(0.9);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* The essay, folded until "why" opens it. */
+/* The essay, always open under the bands. */
 .answer {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-.answer[data-open] {
-  grid-template-rows: 1fr;
   border-bottom: 1px solid var(--border);
-}
-.answerInner {
-  min-height: 0;
-  overflow: hidden;
 }
 
 @media (hover: hover) {
@@ -263,8 +217,7 @@
 @media (prefers-reduced-motion: reduce) {
   .cover,
   .page,
-  .qmark,
-  .answer {
+  .qmark {
     transition: none;
   }
 }
