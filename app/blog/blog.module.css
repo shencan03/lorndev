@@ -1,0 +1,47 @@
+/* The blog index: titles as big condensed type, newest first. */
+.index {
+  padding-block: clamp(2.5rem, 8vw, 5.5rem) 5rem;
+}
+.list {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 2.75rem);
+}
+.entry {
+  display: grid;
+  gap: 10px;
+  max-width: 960px;
+}
+.title {
+  font-size: clamp(40px, 6.5vw, 76px);
+  color: color-mix(in oklch, var(--foreground) 88%, var(--background));
+  transition: color 0.2s;
+}
+.entry:hover .title,
+.entry:focus-visible .title {
+  color: var(--foreground);
+}
+.title::after {
+  content: "";
+  display: inline-block;
+  width: 0.42em;
+  height: 0.72em;
+  margin-left: 0.08em;
+  vertical-align: -0.02em;
+  background: var(--mauve);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.entry:hover .title::after,
+.entry:focus-visible .title::after {
+  opacity: 1;
+}
+.date {
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+/* Only ever seen under `pnpm dev`: drafts never reach a production build. */
+.draft {
+  margin-left: 1.5ch;
+  color: var(--mauve);
+}

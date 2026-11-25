@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 import { common } from "lowlight";
 import dockerfile from "highlight.js/lib/languages/dockerfile";
 
@@ -45,6 +46,9 @@ const nextConfig: NextConfig = {
     ],
   },
   output: "standalone",
+  // Dev only: hosts allowed to load the dev server's scripts, e.g. a phone on
+  // the same network: DEV_ORIGINS=10.0.0.5 pnpm dev -H 0.0.0.0
+  allowedDevOrigins: process.env.DEV_ORIGINS?.split(","),
   // Serve one host only; canonical tags cover crawlers that skip redirects.
   async redirects() {
     return [
@@ -61,6 +65,8 @@ const nextConfig: NextConfig = {
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
   options: {
+    // GFM for footnotes ([^1]), plus tables, strikethrough and autolinks.
+    remarkPlugins: [remarkGfm],
     rehypePlugins: [
       [rehypeHighlight, { languages: { ...common, dockerfile } }],
     ],

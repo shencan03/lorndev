@@ -1,0 +1,271 @@
+/* Home: three equal bands (curation, blog, why). Phones stack them to fill
+   the first screen; wide screens set them side by side. */
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 1px solid var(--border);
+  margin-bottom: 4rem;
+}
+
+.band {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  /* Header is ~4.5rem; the three bands share the rest of the first screen. */
+  min-height: max(160px, calc((100svh - 4.5rem) / 3));
+  padding-block: 16px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.band:active {
+  background: color-mix(in oklch, var(--background) 82%, var(--muted));
+}
+.band:focus-visible {
+  outline: 2px solid var(--mauve);
+  outline-offset: -2px;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+.word {
+  display: flex;
+  align-items: center;
+  font-size: clamp(54px, 16vw, 84px);
+}
+.sub {
+  max-width: 22ch;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.cursor {
+  flex: none;
+  height: 0.78em;
+  width: 0.42em;
+  margin-left: 3px;
+  background: var(--mauve);
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.art {
+  flex: none;
+  margin-bottom: -4px;
+  transform: scale(0.82);
+  transform-origin: right bottom;
+}
+
+/* Curation: one cover per shelf, fanned. --i runs -1 (left) to 1 (right). */
+.fan {
+  position: relative;
+  display: block;
+  width: 190px;
+  height: 140px;
+}
+.cover {
+  position: absolute;
+  left: calc(50% - 36px + var(--i) * 62px);
+  bottom: calc((1 - var(--i) * var(--i)) * 14px);
+  width: 72px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--muted);
+  box-shadow: 0 10px 26px oklch(0 0 0 / 55%);
+  transform: rotate(calc(var(--i) * 15deg));
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.square {
+  aspect-ratio: 1;
+}
+.cover img {
+  object-fit: cover;
+}
+
+/* Blog: a stack of pages; the top one carries the newest post's title. */
+.pages {
+  position: relative;
+  display: block;
+  width: 150px;
+  height: 140px;
+}
+.page {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 112px;
+  height: 132px;
+  padding: 14px 12px;
+  border-radius: 4px;
+  background: oklch(0.93 0.008 326);
+  color: oklch(0.25 0.02 326);
+  box-shadow: 0 10px 26px oklch(0 0 0 / 55%);
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.page:nth-child(1) {
+  background: oklch(0.78 0.01 326);
+  transform: rotate(-13deg) translateX(-26px);
+}
+.page:nth-child(2) {
+  background: oklch(0.86 0.01 326);
+  transform: rotate(-5deg) translateX(-10px);
+}
+.page:nth-child(3) {
+  transform: rotate(4deg);
+}
+.pageTitle {
+  display: -webkit-box;
+  margin-bottom: 10px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  font-variation-settings: "wdth" 75;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.page i {
+  display: block;
+  height: 5px;
+  margin-top: 7px;
+  border-radius: 3px;
+  background: oklch(0.25 0.02 326 / 22%);
+}
+.page i:nth-of-type(2) {
+  width: 86%;
+}
+.page i:nth-of-type(4) {
+  width: 64%;
+}
+
+/* Why: a question mark; the band's button opens the essay below it. */
+.why {
+  text-align: left;
+}
+.whyButton {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.whyButton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.whyButton:focus-visible {
+  outline: none;
+}
+.whyButton:focus-visible::after {
+  outline: 2px solid var(--mauve);
+  outline-offset: -2px;
+}
+.why:has(.whyButton:active) {
+  background: color-mix(in oklch, var(--background) 82%, var(--muted));
+}
+.qmark {
+  display: grid;
+  width: 150px;
+  height: 140px;
+  place-items: end center;
+  font-family: var(--font-display);
+  font-size: 150px;
+  font-weight: 800;
+  font-variation-settings: "wdth" 75;
+  line-height: 0.8;
+  color: var(--mauve);
+  transform: rotate(9deg);
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.35s;
+}
+.why:has([aria-expanded="true"]) .qmark {
+  opacity: 0.5;
+  transform: rotate(9deg) scale(0.9);
+}
+
+/* The essay, folded until "why" opens it. */
+.answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.answer[data-open] {
+  grid-template-rows: 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.answerInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (hover: hover) {
+  .band:hover .cover {
+    transform: rotate(calc(var(--i) * 19deg)) translateX(calc(var(--i) * 8px));
+  }
+  .band:hover .page:nth-child(1) {
+    transform: rotate(-17deg) translateX(-34px);
+  }
+  .band:hover .page:nth-child(3) {
+    transform: rotate(7deg) translateX(4px);
+  }
+  .why:hover .qmark {
+    transform: rotate(16deg);
+  }
+}
+
+@media (width >= 48rem) {
+  .stack {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .band {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    min-height: 440px;
+    padding: 28px;
+    border-left: 1px solid var(--border);
+  }
+  .band:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .art {
+    align-self: center;
+    margin: 0 0 auto;
+    transform: none;
+  }
+  /* Same height under every word, so the three words line up. */
+  .sub {
+    min-height: calc(3lh);
+  }
+  .answer {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+  .cover,
+  .page,
+  .qmark,
+  .answer {
+    transition: none;
+  }
+}

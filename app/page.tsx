@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { cn } from "@/lib/utils";
-import HomeHero from "@/app/ui/home-hero";
+import HomeStack from "@/app/ui/home-stack";
 import HomePage from "@/content/home-page.mdx";
 import styles from "@/app/page.module.css";
 
@@ -13,10 +12,14 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <HomeHero title="Why bother making this website?" />
-      <div className={cn("shell", styles.essay)}>
-        <HomePage />
-      </div>
+      <h1 className="sr-only">lorndev</h1>
+      <HomeStack
+        essay={
+          <div className={styles.essay}>
+            <HomePage />
+          </div>
+        }
+      />
     </>
   );
 }
