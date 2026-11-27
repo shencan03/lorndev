@@ -1,0 +1,50 @@
+name: Sync last played song
+
+# Hourly: writes the song last played on YouTube Music to ~/lorndev-data/last-played.json on
+# the server (this self-hosted runner), which lorndev-prod mounts read-only at /data. There is
+# no commit and no redeploy; the home page fetches /api/last-played on each visit.
+#
+# Uses the same cookie as sync-songs.yml (see the setup there), plus, once:
+#   mkdir -p ~/lorndev-data && chmod 755 ~/lorndev-data
+#   cd ~/lorndev && docker compose up -d lorndev-prod   # picks up the new volume
+#
+# An expired cookie only logs a warning here (sync-songs.yml fails loudly on it daily), and
+# the site keeps the last song until the file is two days old, then hides it.
+
+on:
+  schedule:
+    - cron: "23 * * * *" # hourly, at :23
+  workflow_dispatch:
+
+concurrency:
+  group: sync-last-played
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Install yt-music-node
+        run: |
+          version=$(node -p 'require("./package.json").dependencies["yt-music-node"]')
+          npm install --prefix scripts --no-save --no-package-lock --no-audit --no-fund \
+            "yt-music-node@$version"
+
+      - name: Fetch last played song
+        run: |
+          YTM_AUTH_FILE="$HOME/.config/lorndev/ytm-browser.json" \
+          LAST_PLAYED_FILE="$HOME/lorndev-data/last-played.json" \
+            node scripts/sync-last-played.mts

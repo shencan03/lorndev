@@ -26,6 +26,12 @@ services:
   lorndev-prod:
     image: ghcr.io/shencan03/lorndev:main
     container_name: lorndev-prod
+    # The last played song, refreshed hourly by sync-last-played.yml. The folder is mounted
+    # (not the file) because the job replaces the file on each write.
+    volumes:
+      - ${HOME}/lorndev-data:/data:ro
+    environment:
+      - LAST_PLAYED_FILE=/data/last-played.json
     depends_on:
       cloudflare:
         condition: service_started
