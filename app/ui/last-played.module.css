@@ -1,0 +1,298 @@
+/* Centre column of the header. Its height matches the wordmark so the header never grows. */
+.slot {
+  display: flex;
+  min-width: 0;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- The record ---------- */
+
+/* A dark disc with faint grooves; the cover, cut round, is its label. */
+.record {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle,
+    oklch(0.16 0.01 326) 0 1px,
+    oklch(0.21 0.012 326) 1px 2px
+  );
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 8%),
+    0 4px 12px oklch(0 0 0 / 50%);
+}
+/* A soft sheen across the grooves, so the turning reads. */
+.record::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 30deg,
+    transparent 0 10%,
+    oklch(1 0 0 / 9%) 16%,
+    transparent 24% 60%,
+    oklch(1 0 0 / 6%) 66%,
+    transparent 74%
+  );
+}
+.record img {
+  width: 44%;
+  height: 44%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px oklch(0 0 0 / 60%);
+}
+/* The spindle hole. */
+.record::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 8%;
+  height: 8%;
+  border-radius: 50%;
+  background: var(--background);
+}
+
+.small {
+  width: 26px;
+  height: 26px;
+}
+.large {
+  width: 68px;
+  height: 68px;
+}
+
+/* Turning uses `rotate`, so it can run alongside the slides, which use `translate`. */
+.spinning .record,
+.record.spinning {
+  animation: spin 5s linear infinite;
+}
+
+/* ---------- The trigger in the header ---------- */
+
+/* The card in miniature: a 28px cover with the record peeking out of its right side. */
+.trigger {
+  display: grid;
+  place-items: center;
+  /* A 44px-tall target that doesn't grow the 22px slot (so neither the header). */
+  min-width: 52px;
+  height: 44px;
+  margin-block: -11px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  animation: arrive 0.5s ease-out both;
+}
+.trigger:focus-visible {
+  outline: 2px solid var(--mauve);
+  outline-offset: -4px;
+}
+
+.mini {
+  position: relative;
+  display: block;
+  width: 41px;
+  height: 28px;
+  transition: scale 0.2s ease-out;
+}
+.miniCover {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 1;
+  width: 28px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--muted);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 8%),
+    0 4px 12px oklch(0 0 0 / 55%);
+}
+.miniCover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mini .record {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  translate: 14px 0;
+  transition: translate 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Once, on arrival: the record slides out of the sleeve. */
+  animation: peek 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s backwards;
+}
+.mini .record.spinning {
+  animation:
+    peek 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s backwards,
+    spin 5s linear infinite;
+}
+.trigger:active .mini {
+  scale: 0.93;
+}
+@media (hover: hover) {
+  .trigger:hover .mini .record {
+    translate: 18px 0;
+  }
+}
+/* While the card is open the small record tucks back in: it's out, in the card. */
+.trigger:has(+ .card:popover-open) .mini .record {
+  translate: 3px 0;
+}
+
+/* ---------- The card ---------- */
+
+/* A native popover: top layer, light dismiss, Esc. Drops from under the header, centred;
+   absolute (to the document), so it scrolls away with the header. */
+.card {
+  position: absolute;
+  inset: auto;
+  top: 62px;
+  left: 50%;
+  display: none;
+  width: min(320px, calc(100vw - 2rem));
+  margin: 0;
+  padding: 16px;
+  gap: 16px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--background) 88%, var(--muted));
+  color: var(--foreground);
+  box-shadow: 0 18px 50px oklch(0 0 0 / 60%);
+  translate: -50% 0;
+  opacity: 1;
+  transition:
+    opacity 0.2s ease-out,
+    translate 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+    display 0.25s allow-discrete,
+    overlay 0.25s allow-discrete;
+}
+.card:popover-open {
+  display: flex;
+}
+@starting-style {
+  .card:popover-open {
+    opacity: 0;
+    translate: -50% -6px;
+  }
+}
+.card:not(:popover-open) {
+  opacity: 0;
+  translate: -50% -6px;
+}
+.card::backdrop {
+  background: transparent;
+}
+
+/* Cover with the record sliding half out of it, like a sleeve: the one moment. */
+.sleeve {
+  position: relative;
+  flex: none;
+  width: 72px;
+  height: 72px;
+  margin-right: 30px;
+}
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--muted);
+  box-shadow: 0 8px 20px oklch(0 0 0 / 55%);
+}
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sleeve .record {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  translate: 32px 0;
+  transition: translate 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) 0.08s;
+}
+@starting-style {
+  .card:popover-open .sleeve .record {
+    translate: 0 0;
+  }
+}
+
+.info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+.title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 20px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.artist {
+  margin-top: 4px;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.when {
+  margin-top: 10px;
+  font-size: 11px;
+  color: color-mix(in oklch, var(--muted-foreground) 80%, var(--background));
+}
+.open {
+  align-self: flex-start;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: var(--mauve);
+  text-underline-offset: 3px;
+}
+.title:focus-visible,
+.open:focus-visible {
+  outline: 2px solid var(--mauve);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+@keyframes peek {
+  from {
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .spinning .record,
+  .record.spinning,
+  .mini .record,
+  .mini .record.spinning {
+    animation: none;
+  }
+  .card,
+  .sleeve .record {
+    transition: none;
+  }
+}
